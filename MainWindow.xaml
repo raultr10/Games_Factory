@@ -9,5 +9,6 @@
     <Grid>
         <TextBlock Text="Frank Sirvent Climent"/>
         <TextBlock Text="Pary"/>
+        <TextBlock Text="aDIOS"/>
     </Grid>
 </Window>
