@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -40,6 +41,14 @@ android {
 }
 
 dependencies {
+// ROOM dependencies
+    implementation("androidx.room:room-runtime:2.7.2")
+    implementation("androidx.room:room-ktx:2.7.2") // Soporte para Coroutines y Kotlin Extensions.
+    ksp("androidx.room:room-compiler:2.7.2") // KSP para procesamiento de anotaciones.
+
+// ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
