@@ -1,5 +1,6 @@
 package edu.raultirado.games_factory_crud_kotlin.data.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 
@@ -24,6 +25,9 @@ import androidx.room.ForeignKey
     ]
 )
 data class Inscripcion(
-    val id_torneo: String = "",
-    val id_DNI: String = ""
+    @ColumnInfo(name = "id_torneo")
+    val idTorneo: String = "",
+
+    @ColumnInfo(name = "id_DNI")
+    val idDni: String = ""
 )
