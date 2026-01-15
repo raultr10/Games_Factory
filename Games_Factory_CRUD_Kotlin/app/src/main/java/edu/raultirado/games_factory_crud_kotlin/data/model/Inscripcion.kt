@@ -24,6 +24,6 @@ import androidx.room.ForeignKey
     ]
 )
 data class Inscripcion(
-    val id_torneo: String, // Usamos String para el CHAR(12) de SQL
-    val id_DNI: String     // Usamos String para el CHAR(11) de SQL
+    val id_torneo: String = "",
+    val id_DNI: String = ""
 )

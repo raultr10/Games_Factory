@@ -1,17 +1,38 @@
 package edu.raultirado.games_factory_crud_kotlin.data.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.util.Date
 
+@Entity(tableName = "Usuario")
 data class Usuario(
-    val idDni: String,
-    val nombreUsu: String,
-    val apellidosUsu: String,
-    val direccion: String,
+    @PrimaryKey
+    @ColumnInfo(name = "ID_DNI")
+    val idDni: String = "",
+
+    @ColumnInfo(name = "nombre_usu")
+    val nombreUsu: String = "",
+
+    @ColumnInfo(name = "apellidos_usu")
+    val apellidosUsu: String = "",
+
+    val direccion: String = "",
+
+    @ColumnInfo(name = "fecha_naci")
     val fechaNaci: Date,
-    val fechaN: String,
-    val telefono: String,
-    val codigoPostal: String,
-    val correoUsu: String,
-    val contrasenaUsu: String,
-    val verificar: Boolean
+
+    val telefono: String = "",
+
+    @ColumnInfo(name = "codigo_postal")
+    val codigoPostal: String = "",
+
+    @ColumnInfo(name = "correo_usu")
+    val correoUsu: String = "",
+
+    @ColumnInfo(name = "contrasena_usu")
+    val contrasenaUsu: String = "",
+
+    @ColumnInfo(name = "factory_coins")
+    val factoryCoins: Int = 0,
 )

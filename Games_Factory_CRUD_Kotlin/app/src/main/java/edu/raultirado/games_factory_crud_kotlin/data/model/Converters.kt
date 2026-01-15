@@ -5,6 +5,11 @@ import java.util.Date
 
 //Sirve para traducir los enums, los convierte en strings
 class Converters {
+    @TypeConverter
+    fun fromTipoEmp(value: TipoEmpleado) = value.name
+
+    @TypeConverter
+    fun toTipoEmp(value: String) = TipoEmpleado.valueOf(value)
     //Pasamos la fecha a Long porque SQLite (la base de datos que usa Room internamente) no tiene un tipo de dato específico para guardar fechas como "Date"
     @TypeConverter
     fun fromDate(date: Date?): Long? = date?.time

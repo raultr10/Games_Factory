@@ -6,8 +6,8 @@ import androidx.room.Relation
 data class ProductoVideojuego(
     @Embedded val producto: Producto,
     @Relation(
-        parentColumn = "idProducto",
-        entityColumn = "idProductoJuego"
+        parentColumn = "ID_producto", // Nombre de la columna en la tabla Producto
+        entityColumn = "ID_producto"  // Nombre de la columna en la tabla Videojuego
     )
     val videojuego: Videojuego
 )
