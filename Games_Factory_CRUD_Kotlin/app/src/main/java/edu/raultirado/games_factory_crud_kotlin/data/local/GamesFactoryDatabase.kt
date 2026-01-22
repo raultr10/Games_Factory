@@ -1,4 +1,4 @@
-package edu.raultirado.games_factory_crud_kotlin.data.datasource
+package edu.raultirado.games_factory_crud_kotlin.data.local
 
 import android.content.Context
 import androidx.room.Database
