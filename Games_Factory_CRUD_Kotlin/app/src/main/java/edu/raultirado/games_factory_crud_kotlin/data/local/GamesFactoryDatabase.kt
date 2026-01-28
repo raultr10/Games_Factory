@@ -14,8 +14,6 @@ import edu.raultirado.games_factory_crud_kotlin.data.model.*
         CategoriaEmpleado::class,
         Producto::class,
         Videojuego::class,
-        Torneo::class,
-        Inscripcion::class,
         Noticia::class
     ],
     version = 1,
@@ -29,10 +27,8 @@ abstract class GamesFactoryDatabase : RoomDatabase() {
     abstract fun usuarioDao(): UsuarioDao
     abstract fun empleadoDao(): EmpleadoDao
     abstract fun productoDao(): ProductoDao
-    abstract fun torneoDao(): TorneoDao
-    abstract fun noticiaDao(): NoticiaDao
-    abstract fun inscripcionDao(): InscripcionDao
 
+    abstract fun noticiaDao(): NoticiaDao
     companion object {
         @Volatile
         private var INSTANCE: GamesFactoryDatabase? = null

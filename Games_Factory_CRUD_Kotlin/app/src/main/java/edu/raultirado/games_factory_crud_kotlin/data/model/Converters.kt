@@ -17,20 +17,6 @@ class Converters {
     @TypeConverter
     fun toDate(millis: Long?): Date? = millis?.let { Date(it) }
 
-    // --- Conversores para Torneo ---
-    @TypeConverter
-    fun fromCatTorneo(value: CatTorneo) = value.name
-
-    @TypeConverter
-    fun toCatTorneo(value: String) = CatTorneo.valueOf(value)
-
-    @TypeConverter
-    fun fromTipoTorneo(value: TipoTorneo) = value.name
-
-    @TypeConverter
-    fun toTipoTorneo(value: String): TipoTorneo {
-        return if (value == "UnoVsUno") TipoTorneo.UnoVsUno else TipoTorneo.DosVsDos
-    }
     // Para Categoría
     @TypeConverter
     fun fromCatV(value: CatV) = value.name

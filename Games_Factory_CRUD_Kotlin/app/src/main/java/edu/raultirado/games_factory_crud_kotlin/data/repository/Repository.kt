@@ -3,11 +3,9 @@ package edu.raultirado.games_factory_crud_kotlin.data.repository
 import edu.raultirado.games_factory_crud_kotlin.data.local.LocalDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.model.CategoriaEmpleado
 import edu.raultirado.games_factory_crud_kotlin.data.model.Empleado
-import edu.raultirado.games_factory_crud_kotlin.data.model.Inscripcion
 import edu.raultirado.games_factory_crud_kotlin.data.model.Noticia
 import edu.raultirado.games_factory_crud_kotlin.data.model.Producto
 import edu.raultirado.games_factory_crud_kotlin.data.model.ProductoVideojuego
-import edu.raultirado.games_factory_crud_kotlin.data.model.Torneo
 import edu.raultirado.games_factory_crud_kotlin.data.model.Usuario
 import edu.raultirado.games_factory_crud_kotlin.data.model.Videojuego
 import kotlinx.coroutines.flow.Flow
@@ -28,21 +26,6 @@ class Repository(private val localDatasource: LocalDatasource) {
         localDatasource.saveVideojuegoCompleto(producto, videojuego)
     }
 
-    //Torneos
-    val allTorneos: Flow<List<Torneo>> = localDatasource.getAllTorneos()
-
-    suspend fun insertTorneo(torneo: Torneo) = localDatasource.insertTorneo(torneo)
-
-    suspend fun deleteTorneo(torneo: Torneo) = localDatasource.deleteTorneo(torneo)
-
-    //Inscripciones
-    suspend fun insertInscripcion(dni: String, idTorneo: String) {
-        localDatasource.insertInscripcion(dni, idTorneo)
-    }
-
-    suspend fun deleteInscripcion(inscripcion: Inscripcion) {
-        localDatasource.deleteInscripcion(inscripcion)
-    }
 
     //Noticias
     val allNoticias: Flow<List<Noticia>> = localDatasource.getAllNoticias()

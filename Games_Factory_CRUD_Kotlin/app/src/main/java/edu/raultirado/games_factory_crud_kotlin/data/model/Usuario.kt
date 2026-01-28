@@ -32,7 +32,4 @@ data class Usuario(
 
     @ColumnInfo(name = "contrasena_usu")
     val contrasenaUsu: String = "",
-
-    @ColumnInfo(name = "factory_coins")
-    val factoryCoins: Int = 0,
 )

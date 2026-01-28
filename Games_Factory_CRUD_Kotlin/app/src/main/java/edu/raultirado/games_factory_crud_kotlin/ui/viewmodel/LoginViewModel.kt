@@ -8,9 +8,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import edu.raultirado.games_factory_crud_kotlin.data.local.GamesFactoryDatabase
 import edu.raultirado.games_factory_crud_kotlin.data.local.LocalDatasource
+import edu.raultirado.games_factory_crud_kotlin.data.model.Usuario
 import edu.raultirado.games_factory_crud_kotlin.data.repository.Repository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: Repository
@@ -26,13 +28,35 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             database.usuarioDao(),
             database.empleadoDao(),
             database.productoDao(),
-            database.torneoDao(),
-            database.noticiaDao(),
-            database.inscripcionDao()
+            database.noticiaDao()
         )
         repository = Repository(localDatasource)
+
+        seedDatabase()
     }
 
+    private fun seedDatabase() {
+        viewModelScope.launch {
+            // Usamos tus atributos exactos: nombreUsu, apellidosUsu, etc.
+            val adminUser = Usuario(
+                idDni = "admin",
+                nombreUsu = "Admin",
+                apellidosUsu = "Games Factory",
+                direccion = "Calle Falsa 123",
+                fechaNaci = Date(), // Fecha actual
+                telefono = "600000000",
+                codigoPostal = "03001",
+                correoUsu = "admin@factory.com",
+                contrasenaUsu = "1234", // Esta es la que usarás para loguearte
+            )
+
+            try {
+                repository.insertUsuario(adminUser)
+            } catch (e: Exception) {
+                // Si el usuario ya existe (ABORT), no hacemos nada
+            }
+        }
+    }
     fun login(dni: String, pass: String, onSuccess: () -> Unit) {
         viewModelScope.launch {
             // Obtenemos la lista de usuarios del repositorio
