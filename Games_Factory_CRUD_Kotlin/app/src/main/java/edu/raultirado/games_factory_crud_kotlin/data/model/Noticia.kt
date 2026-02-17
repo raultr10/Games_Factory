@@ -3,9 +3,6 @@ package edu.raultirado.games_factory_crud_kotlin.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.Date
-
-enum class CatNoticia { Playstation, Nintendo, Xbox, PC }
 
 @Entity(tableName = "Noticia")
 data class Noticia(
@@ -16,11 +13,13 @@ data class Noticia(
     val descripcion: String = "",
     val historia: String = "",
 
+    // CAMBIO: De Date a String
     @ColumnInfo(name = "fecha_creacion")
-    val fechaCreacion: Date,
+    val fechaCreacion: String = "",
 
+    // CAMBIO: De Enum a String
     @ColumnInfo(name = "categoria_noticia")
-    val categoriaNoticia: CatNoticia,
+    val categoriaNoticia: String = "",
 
     val imagen: String = ""
 )

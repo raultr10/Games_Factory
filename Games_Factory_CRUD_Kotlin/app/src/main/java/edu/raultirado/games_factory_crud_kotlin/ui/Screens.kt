@@ -6,4 +6,8 @@ sealed class Screens(val route: String) {
 
     //Pantalla de Inicio
     object MainScreen : Screens("main_screen")
+
+    object VideojuegosScreen : Screens("videojuegos_list")
+    object NoticiasScreen : Screens("noticias_list")
+    object EmpleadosScreen : Screens("empleados_list")
 }

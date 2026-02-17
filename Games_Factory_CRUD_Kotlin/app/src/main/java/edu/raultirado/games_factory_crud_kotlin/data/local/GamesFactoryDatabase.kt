@@ -13,14 +13,13 @@ import edu.raultirado.games_factory_crud_kotlin.data.model.*
         Empleado::class,
         CategoriaEmpleado::class,
         Producto::class,
-        Videojuego::class,
         Noticia::class
     ],
     version = 1,
     exportSchema = true // Genera el JSON con la estructura
 )
 //Registramos los conversores para fechas y enums
-@TypeConverters(Converters::class)
+//@TypeConverters(Converters::class)
 abstract class GamesFactoryDatabase : RoomDatabase() {
 
     // 3. Declaramos los DAOs

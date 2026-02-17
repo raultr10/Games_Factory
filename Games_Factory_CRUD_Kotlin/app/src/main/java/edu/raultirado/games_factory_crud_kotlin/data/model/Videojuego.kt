@@ -1,36 +1,18 @@
 package edu.raultirado.games_factory_crud_kotlin.data.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
-
-enum class CatV { Plataforma, Accion, Terror, Aventura }
-enum class TipoC { Nintendo, Xbox, Playstation, PC }
-enum class Idio { IN, SP, JP }
-@Entity(
-    tableName = "videojuego",
-    foreignKeys = [
-        ForeignKey(
-            entity = Producto::class,
-            parentColumns = ["ID_producto"],
-            childColumns = ["ID_producto"],
-            onUpdate = ForeignKey.CASCADE,
-            onDelete = ForeignKey.NO_ACTION
-        )
-    ]
-)
 data class Videojuego(
-    @PrimaryKey
-    @ColumnInfo(name = "ID_producto")
-    val idProducto: String = "",
+    val idProducto: String,
 
-    @ColumnInfo(name = "categoria_videojuego")
-    val categoriavideojuego: CatV,
+    // --- Datos que vienen de la tabla PRODUCTO ---
+    val nombre: String,
+    val descripcion: String,
+    val precio: Double,
+    val anyo: Int,
+    val imagen: String, // Será la URL o nombre del archivo
 
-    @ColumnInfo(name = "tipo_consola")
-    val tipoconsola: TipoC,
-
-    val idioma: Idio,
-    val compania: String = ""
+    // --- Datos que vienen de la tabla VIDEOJUEGO ---
+    val categoria: String,    // Usamos String en vez de Enum para evitar crasheos si la BD trae mayúsculas/minúsculas distintas
+    val tipoConsola: String,
+    val idioma: String,
+    val compania: String
 )

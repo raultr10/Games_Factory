@@ -3,7 +3,6 @@ package edu.raultirado.games_factory_crud_kotlin.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.Date
 
 @Entity(tableName = "Usuario")
 data class Usuario(
@@ -19,8 +18,9 @@ data class Usuario(
 
     val direccion: String = "",
 
+    // CAMBIO: De Date a String
     @ColumnInfo(name = "fecha_naci")
-    val fechaNaci: Date,
+    val fechaNaci: String = "",
 
     val telefono: String = "",
 

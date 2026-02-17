@@ -41,12 +41,17 @@ android {
 }
 
 dependencies {
+    // Librería para cargar imágenes desde URL
+    implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.room:room-runtime:2.7.2")
     implementation("androidx.room:room-ktx:2.7.2") // Soporte para Coroutines y Kotlin Extensions.
     ksp("androidx.room:room-compiler:2.7.2") // KSP para procesamiento de anotaciones.
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2")
     implementation("androidx.navigation:navigation-compose:2.9.3")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.material:material-icons-core")
+    implementation("net.sourceforge.jtds:jtds:1.3.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

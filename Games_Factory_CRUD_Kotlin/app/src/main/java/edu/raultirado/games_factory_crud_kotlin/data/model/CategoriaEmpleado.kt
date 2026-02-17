@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-enum class TipoEmpleado { Empleado_Normal, Empleado_Admin }
+// Borramos el enum class TipoEmpleado...
 
 @Entity(
     tableName = "Categoria_Empleado",
@@ -24,6 +24,7 @@ data class CategoriaEmpleado(
     @ColumnInfo(name = "ID_emp")
     val idEmp: String = "",
 
+    // CAMBIO: De Enum a String. Quitamos el valor por defecto del enum.
     @ColumnInfo(name = "tipo_empleado")
-    val tipoEmpleado: TipoEmpleado = TipoEmpleado.Empleado_Normal
+    val tipoEmpleado: String = ""
 )

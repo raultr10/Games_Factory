@@ -4,35 +4,33 @@ import edu.raultirado.games_factory_crud_kotlin.data.local.LocalDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.model.CategoriaEmpleado
 import edu.raultirado.games_factory_crud_kotlin.data.model.Empleado
 import edu.raultirado.games_factory_crud_kotlin.data.model.Noticia
-import edu.raultirado.games_factory_crud_kotlin.data.model.Producto
-import edu.raultirado.games_factory_crud_kotlin.data.model.ProductoVideojuego
 import edu.raultirado.games_factory_crud_kotlin.data.model.Usuario
 import edu.raultirado.games_factory_crud_kotlin.data.model.Videojuego
+import edu.raultirado.games_factory_crud_kotlin.data.remote.RemoteDatasource
 import kotlinx.coroutines.flow.Flow
 
-class Repository(private val localDatasource: LocalDatasource) {
+class Repository(
+    private val localDatasource: LocalDatasource,
+    private val remoteDatasource: RemoteDatasource
+) {
 
-    //Usuarios
+    // --- USUARIOS (Local) ---
     val allUsuarios: Flow<List<Usuario>> = localDatasource.getAllUsuarios()
-
     suspend fun insertUsuario(usuario: Usuario) = localDatasource.insertUsuario(usuario)
-
     suspend fun deleteUsuario(usuario: Usuario) = localDatasource.deleteUsuario(usuario)
 
-    //Productos y videojuegos
-    val allVideojuegos: Flow<List<ProductoVideojuego>> = localDatasource.getAllVideojuegos()
+    // --- VIDEOJUEGOS (Remoto - Servidor SQL) ---
+    // Hemos borrado 'allVideojuegos' y 'saveVideojuegoCompleto' porque ya no usamos Room para esto.
 
-    suspend fun saveVideojuegoCompleto(producto: Producto, videojuego: Videojuego) {
-        localDatasource.saveVideojuegoCompleto(producto, videojuego)
+    suspend fun fetchVideojuegos(): List<Videojuego> {
+        return remoteDatasource.getVideojuegos()
     }
 
-
-    //Noticias
+    // --- NOTICIAS (Local) ---
     val allNoticias: Flow<List<Noticia>> = localDatasource.getAllNoticias()
-
     suspend fun insertNoticia(noticia: Noticia) = localDatasource.insertNoticia(noticia)
 
-    //Empleados
+    // --- EMPLEADOS (Local) ---
     val allEmpleados: Flow<List<Empleado>> = localDatasource.getAllEmpleados()
 
     suspend fun insertEmpleadoConCategoria(empleado: Empleado, categoria: CategoriaEmpleado) {

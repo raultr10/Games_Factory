@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import edu.raultirado.games_factory_crud_kotlin.data.local.GamesFactoryDatabase
 import edu.raultirado.games_factory_crud_kotlin.data.local.LocalDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.model.Usuario
+import edu.raultirado.games_factory_crud_kotlin.data.remote.RemoteDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.repository.Repository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -17,6 +18,7 @@ import java.util.Date
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: Repository
     private val localDatasource: LocalDatasource
+    private val remoteDatasource: RemoteDatasource
 
     // Estado para el error de login (como hacías con los estados en tus otros ViewModels)
     var loginError by mutableStateOf("")
@@ -30,7 +32,8 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             database.productoDao(),
             database.noticiaDao()
         )
-        repository = Repository(localDatasource)
+        remoteDatasource = RemoteDatasource()
+        repository = Repository(localDatasource, remoteDatasource)
 
         seedDatabase()
     }
@@ -43,7 +46,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 nombreUsu = "Admin",
                 apellidosUsu = "Games Factory",
                 direccion = "Calle Falsa 123",
-                fechaNaci = Date(), // Fecha actual
+                fechaNaci = "1990-01-01", // Fecha actual
                 telefono = "600000000",
                 codigoPostal = "03001",
                 correoUsu = "admin@factory.com",
