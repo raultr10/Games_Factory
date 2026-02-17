@@ -11,7 +11,6 @@ class LocalDatasource(
     private val usuarioDao: UsuarioDao,
     private val empleadoDao: EmpleadoDao,
     private val productoDao: ProductoDao,
-    private val noticiaDao: NoticiaDao,
 ) {
     // --- USUARIOS ---
     fun getAllUsuarios(): Flow<List<Usuario>> = usuarioDao.getAllUsuarios()
@@ -22,10 +21,6 @@ class LocalDatasource(
     suspend fun insertProducto(producto: Producto) {
         productoDao.insertProducto(producto)
     }
-
-    // --- NOTICIAS ---
-    fun getAllNoticias(): Flow<List<Noticia>> = noticiaDao.getAllNoticias()
-    suspend fun insertNoticia(noticia: Noticia) = noticiaDao.insertNoticia(noticia)
 
     // --- EMPLEADOS ---
     fun getAllEmpleados(): Flow<List<Empleado>> = empleadoDao.getAllEmpleados()

@@ -26,10 +26,9 @@ class Repository(
         return remoteDatasource.getVideojuegos()
     }
 
-    // --- NOTICIAS (Local) ---
-    val allNoticias: Flow<List<Noticia>> = localDatasource.getAllNoticias()
-    suspend fun insertNoticia(noticia: Noticia) = localDatasource.insertNoticia(noticia)
-
+    suspend fun fetchNoticias(): List<Noticia> {
+        return remoteDatasource.getNoticias()
+    }
     // --- EMPLEADOS (Local) ---
     val allEmpleados: Flow<List<Empleado>> = localDatasource.getAllEmpleados()
 

@@ -12,8 +12,7 @@ import edu.raultirado.games_factory_crud_kotlin.data.model.*
         Usuario::class,
         Empleado::class,
         CategoriaEmpleado::class,
-        Producto::class,
-        Noticia::class
+        Producto::class
     ],
     version = 1,
     exportSchema = true // Genera el JSON con la estructura
@@ -27,7 +26,6 @@ abstract class GamesFactoryDatabase : RoomDatabase() {
     abstract fun empleadoDao(): EmpleadoDao
     abstract fun productoDao(): ProductoDao
 
-    abstract fun noticiaDao(): NoticiaDao
     companion object {
         @Volatile
         private var INSTANCE: GamesFactoryDatabase? = null

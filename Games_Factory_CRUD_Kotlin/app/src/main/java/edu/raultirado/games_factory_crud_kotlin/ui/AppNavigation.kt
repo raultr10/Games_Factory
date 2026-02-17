@@ -11,6 +11,7 @@ import edu.raultirado.games_factory_crud_kotlin.ui.screens.MainScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.NoticiasScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.VideojuegosScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.viewmodel.LoginViewModel
+import edu.raultirado.games_factory_crud_kotlin.ui.viewmodel.NoticiasViewModel
 import edu.raultirado.games_factory_crud_kotlin.ui.viewmodel.VideojuegosViewModel
 
 @Composable
@@ -46,7 +47,8 @@ fun AppNavigation() {
 
         // 5. Pantalla de Noticias
         composable(Screens.NoticiasScreen.route) {
-            NoticiasScreen(navController = navController)
+            val viewModel: NoticiasViewModel = viewModel()
+            NoticiasScreen(navController = navController, viewModel = viewModel)
         }
     }
 }

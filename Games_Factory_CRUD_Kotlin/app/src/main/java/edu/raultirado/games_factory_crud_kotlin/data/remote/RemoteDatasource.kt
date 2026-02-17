@@ -1,5 +1,6 @@
 package edu.raultirado.games_factory_crud_kotlin.data.remote
 
+import edu.raultirado.games_factory_crud_kotlin.data.model.Noticia
 import edu.raultirado.games_factory_crud_kotlin.data.model.Videojuego
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -51,6 +52,42 @@ class RemoteDatasource {
             } finally {
                 connection?.close()
             }
+        }
+        return@withContext lista
+    }
+    suspend fun getNoticias(): List<Noticia> = withContext(Dispatchers.IO) {
+        val lista = mutableListOf<Noticia>()
+        val connection = DbConnection.getConnection()
+
+        if (connection != null) {
+            try {
+                // Consulta SQL para leer la tabla Noticia
+                val query = "SELECT ID_noticia, titulo, descripcion, historia, fecha_creacion, categoria_noticia, imagen FROM Noticia"
+
+                val stmt: Statement = connection.createStatement()
+                val rs: ResultSet = stmt.executeQuery(query)
+
+                while (rs.next()) {
+                    lista.add(
+                        Noticia(
+                            idNoticia = rs.getString("ID_noticia") ?: "",
+                            titulo = rs.getString("titulo") ?: "",
+                            descripcion = rs.getString("descripcion") ?: "",
+                            historia = rs.getString("historia") ?: "",
+                            fechaCreacion = rs.getString("fecha_creacion") ?: "",
+                            categoriaNoticia = rs.getString("categoria_noticia") ?: "",
+                            imagen = rs.getString("imagen") ?: ""
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                throw Exception("Error de SQL en Noticias: ${e.message}")
+            } finally {
+                connection.close()
+            }
+        } else {
+            throw Exception("No se pudo conectar al servidor de base de datos.")
         }
         return@withContext lista
     }

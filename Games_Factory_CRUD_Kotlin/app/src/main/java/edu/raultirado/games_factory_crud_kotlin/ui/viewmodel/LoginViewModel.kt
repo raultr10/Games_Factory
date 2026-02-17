@@ -29,8 +29,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         localDatasource = LocalDatasource(
             database.usuarioDao(),
             database.empleadoDao(),
-            database.productoDao(),
-            database.noticiaDao()
+            database.productoDao()
         )
         remoteDatasource = RemoteDatasource()
         repository = Repository(localDatasource, remoteDatasource)
