@@ -1,0 +1,26 @@
+﻿<UserControl x:Class="Games_Factory.Views.GameDetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Background="White" Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Image Source="{Binding SelectedGame.Producto.Imagen, Converter={StaticResource UrlImageConverter}}" Stretch="Uniform" Margin="10"/>
+
+        <StackPanel Grid.Column="1" Margin="20">
+            <TextBlock Text="{Binding SelectedGame.Producto.Nombre}" FontSize="30" FontWeight="Bold"/>
+            <TextBlock Text="{Binding SelectedGame.Producto.Precio, StringFormat={}{0:C}}" FontSize="24" Foreground="Orange" Margin="0,10"/>
+            <TextBlock Text="{Binding SelectedGame.Producto.Descripcion}" TextWrapping="Wrap" Margin="0,20"/>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Cantidad: " VerticalAlignment="Center"/>
+                <TextBox Text="{Binding Cantidad}" Width="50" Margin="10,0"/>
+                <Button Content="Comprar" Command="{Binding BuyCommand}" Padding="20,10" Background="Red" Foreground="White" FontWeight="Bold"/>
+            </StackPanel>
+
+            <Button Content="Volver" Command="{Binding GoBackCommand}" HorizontalAlignment="Left" Margin="0,30,0,0"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

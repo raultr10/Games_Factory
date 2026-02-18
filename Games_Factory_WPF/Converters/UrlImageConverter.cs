@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace Games_Factory.Converters
 {
-    public class UrlImageConverter
+    public class UrlImageConverter : IValueConverter
     {
         // Defino la URL del Servidor Web (Nginx).
         private const string BaseUrl = "http://localhost:8080/";
