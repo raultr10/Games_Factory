@@ -120,7 +120,7 @@
         <ContentControl Grid.Row="2" Content="{Binding CurrentView}"/>
 
         <Border Grid.Row="3" Background="#222">
-            <TextBlock Text="© 2026 Ilusion Games - Frank SC" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock Text="© 2025/26 Games Factory" Foreground="Gray" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Border>
 
     </Grid>
