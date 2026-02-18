@@ -46,7 +46,6 @@ namespace Games_Factory.Models
         [StringLength(150)]
         public string Contrasena { get; set; } = null!;
 
-        // Navegación
         public virtual ICollection<UsuarioProducto> Compras { get; set; } = new List<UsuarioProducto>();
     }
 }

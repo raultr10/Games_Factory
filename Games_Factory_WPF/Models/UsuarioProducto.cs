@@ -24,7 +24,6 @@ namespace Games_Factory.Models
         [Column("total_precio")]
         public decimal TotalPrecio { get; set; }
 
-        // Navegación
         [ForeignKey("IdDni")]
         public virtual Usuario Usuario { get; set; } = null!;
 

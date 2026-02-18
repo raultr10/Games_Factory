@@ -33,10 +33,10 @@ namespace Games_Factory.Models
         [StringLength(90)]
         public string Imagen { get; set; } = null!;
 
-        // Navegación (Relación 1 a 1 con Videojuego)
+        // Navegación (Relación 1 a 1 con Videojuego).
         public virtual Videojuego? VideojuegoInfo { get; set; }
 
-        // Relación con ventas
+        // Relación con ventas.
         public virtual ICollection<UsuarioProducto> Ventas { get; set; } = new List<UsuarioProducto>();
     }
 }

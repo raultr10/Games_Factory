@@ -31,7 +31,7 @@ namespace Games_Factory.Models
         [StringLength(30)]
         public string Compania { get; set; } = null!;
 
-        // Navegación hacia el padre Producto
+        // Navegación hacia Producto.
         [ForeignKey("IdProducto")]
         public virtual Producto Producto { get; set; } = null!;
     }
