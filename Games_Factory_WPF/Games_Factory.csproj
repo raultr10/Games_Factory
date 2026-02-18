@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <Folder Include="Assets\" />
-    <Folder Include="Converters\" />
     <Folder Include="Views\" />
     <Folder Include="ViewModels\Base\" />
   </ItemGroup>
