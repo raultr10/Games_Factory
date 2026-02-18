@@ -28,11 +28,7 @@ class NoticiasViewModel(application: Application) : AndroidViewModel(application
 
     init {
         val database = GamesFactoryDatabase.getInstance(application)
-        val localDatasource = LocalDatasource(
-            usuarioDao = database.usuarioDao(),
-            empleadoDao = database.empleadoDao(),
-            productoDao = database.productoDao()
-        )
+        val localDatasource = LocalDatasource(usuarioDao = database.usuarioDao())
         val remoteDatasource = RemoteDatasource()
         repository = Repository(localDatasource, remoteDatasource)
 

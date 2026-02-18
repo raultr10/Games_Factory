@@ -4,28 +4,19 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 import edu.raultirado.games_factory_crud_kotlin.data.model.*
 
 @Database(
     entities = [
-        Usuario::class,
-        Empleado::class,
-        CategoriaEmpleado::class,
-        Producto::class
+        Usuario::class
     ],
     version = 1,
     exportSchema = true // Genera el JSON con la estructura
 )
-//Registramos los conversores para fechas y enums
-//@TypeConverters(Converters::class)
+
+
 abstract class GamesFactoryDatabase : RoomDatabase() {
-
-    // 3. Declaramos los DAOs
     abstract fun usuarioDao(): UsuarioDao
-    abstract fun empleadoDao(): EmpleadoDao
-    abstract fun productoDao(): ProductoDao
-
     companion object {
         @Volatile
         private var INSTANCE: GamesFactoryDatabase? = null

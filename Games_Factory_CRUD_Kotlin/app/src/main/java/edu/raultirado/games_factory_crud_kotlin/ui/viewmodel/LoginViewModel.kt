@@ -13,7 +13,6 @@ import edu.raultirado.games_factory_crud_kotlin.data.remote.RemoteDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.repository.Repository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.Date
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: Repository
@@ -26,11 +25,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     init {
         // Inicialización idéntica a tus archivos de CarDetails/CarsViewModel
         val database = GamesFactoryDatabase.getInstance(application)
-        localDatasource = LocalDatasource(
-            database.usuarioDao(),
-            database.empleadoDao(),
-            database.productoDao()
-        )
+        localDatasource = LocalDatasource(database.usuarioDao())
         remoteDatasource = RemoteDatasource()
         repository = Repository(localDatasource, remoteDatasource)
 

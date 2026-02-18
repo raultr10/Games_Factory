@@ -4,7 +4,6 @@ import java.sql.Connection
 import java.sql.DriverManager
 
 object DbConnection {
-    // Apunta al localhost de tu ordenador desde el emulador
     private const val URL = "jdbc:jtds:sqlserver://10.0.2.2:1433;databaseName=Games_Factory;ssl=request=false"
     private const val USER = "sa"
     private const val PASS = "Password123!"
