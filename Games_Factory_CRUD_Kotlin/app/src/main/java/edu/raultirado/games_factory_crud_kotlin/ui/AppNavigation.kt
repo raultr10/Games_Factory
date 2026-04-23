@@ -5,6 +5,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import edu.raultirado.games_factory_crud_kotlin.ui.screens.AñadirNoticiaScreen
+import edu.raultirado.games_factory_crud_kotlin.ui.screens.AñadirVideojuegoScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.EmpleadosScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.LoginScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.MainScreen
@@ -45,6 +47,14 @@ fun AppNavigation() {
         composable(Screens.NoticiasScreen.route) {
             val viewModel: NoticiasViewModel = viewModel()
             NoticiasScreen(navController = navController, viewModel = viewModel)
+        }
+        composable(Screens.AñadirVideojuegoScreen.route) {
+            // Creamos una nueva pantalla composable (la definiremos más abajo)
+            AñadirVideojuegoScreen(navController = navController)
+        }
+        composable(Screens.AñadirNoticiaScreen.route) {
+            // Creamos una nueva pantalla composable (la definiremos más abajo)
+            AñadirNoticiaScreen(navController = navController)
         }
     }
 }
