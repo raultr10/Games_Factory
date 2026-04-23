@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="Games_Factory.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="1000">
+    <Grid Background="#F0F0F0" Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Button Grid.Column="0" Margin="10" Command="{Binding GoToGamesCommand}" Cursor="Hand">
+            <Button.Template>
+                <ControlTemplate>
+                    <Border CornerRadius="10" Background="Black" ClipToBounds="True">
+                        <Grid>
+                            <Image Source="/Assets/Videojuegos.jpg" Stretch="UniformToFill" Opacity="0.7"/>
+
+                            <TextBlock Text="VIDEOJUEGOS" Foreground="White" FontSize="36" FontWeight="Black" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="5" Opacity="0.8"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+
+        <Button Grid.Column="1" Margin="10" Command="{Binding GoToNewsCommand}" Cursor="Hand">
+            <Button.Template>
+                <ControlTemplate>
+                    <Border CornerRadius="10" Background="Black" ClipToBounds="True">
+                        <Grid>
+                            <Image Source="/Assets/Noticia.jpg" Stretch="UniformToFill" Opacity="0.7"/>
+
+                            <TextBlock Text="NOTICIAS" Foreground="White" FontSize="36" FontWeight="Black" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="5" Opacity="0.8"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+    </Grid>
+</UserControl>
