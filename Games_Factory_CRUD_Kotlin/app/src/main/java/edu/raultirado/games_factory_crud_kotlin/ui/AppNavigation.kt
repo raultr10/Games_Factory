@@ -2,9 +2,11 @@ package edu.raultirado.games_factory_crud_kotlin.ui
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import edu.raultirado.games_factory_crud_kotlin.ui.screens.AñadirEmpleadoScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.AñadirNoticiaScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.AñadirVideojuegoScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.EmpleadosScreen
@@ -55,6 +57,9 @@ fun AppNavigation() {
         composable(Screens.AñadirNoticiaScreen.route) {
             // Creamos una nueva pantalla composable (la definiremos más abajo)
             AñadirNoticiaScreen(navController = navController)
+        }
+        composable(Screens.AñadirEmpleadosScreen.route) {
+            AñadirEmpleadoScreen(navController = navController)
         }
     }
 }
