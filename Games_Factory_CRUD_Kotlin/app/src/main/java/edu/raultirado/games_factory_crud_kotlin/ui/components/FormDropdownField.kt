@@ -16,35 +16,33 @@ fun FormDropdownField(
     selectedItem: String,
     onItemSelected: (String) -> Unit,
     label: String,
-    options: List<String>
+    options: List<String>,
+    enabled: Boolean = true
 ) {
-    // Controla si el menú está abierto o cerrado
     var expanded by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = label,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
+        Text(text = label, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 4.dp))
 
         ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
+            expanded = if (enabled) expanded else false, // Si está bloqueado, no se expande
+            onExpandedChange = { if (enabled) expanded = !expanded } // Si está bloqueado, no cambia
         ) {
             OutlinedTextField(
                 value = selectedItem,
-                onValueChange = {}, // No dejamos que el usuario escriba, solo que seleccione
-                readOnly = true,    // Hace que actúe solo como un botón
+                onValueChange = {},
+                readOnly = true,
+                enabled = enabled,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .menuAnchor(), // Ancla el menú a este campo de texto
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
-                },
+                    .menuAnchor(),
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = Color.Black
+                    unfocusedBorderColor = Color.Black,
+                    disabledTextColor = Color.DarkGray,
+                    disabledBorderColor = Color.Gray,
+                    disabledTrailingIconColor = Color.Gray
                 )
             )
 

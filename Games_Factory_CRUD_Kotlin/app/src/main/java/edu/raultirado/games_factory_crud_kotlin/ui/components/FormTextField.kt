@@ -17,25 +17,25 @@ fun FormTextField(
     onValueChange: (String) -> Unit,
     label: String,
     isSingleLine: Boolean = true,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default, // Permite elegir tipo de teclado
-    modifier: Modifier = Modifier // Permite pasarle tamaños personalizados
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true //Controla si se puede editar
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
-        Text(
-            text = label,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
+        Text(text = label, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 4.dp))
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
             singleLine = isSingleLine,
-            minLines = if (isSingleLine) 1 else 4, // Si es multilínea, que sea alto por defecto
+            minLines = if (isSingleLine) 1 else 4,
             keyboardOptions = keyboardOptions,
+            enabled = enabled,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = Color.Black
+                unfocusedBorderColor = Color.Black,
+                disabledTextColor = Color.DarkGray, // Color cuando está bloqueado
+                disabledBorderColor = Color.Gray
             )
         )
     }

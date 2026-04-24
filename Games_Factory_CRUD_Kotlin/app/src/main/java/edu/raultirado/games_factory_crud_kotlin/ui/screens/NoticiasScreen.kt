@@ -84,7 +84,7 @@ fun NoticiasScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         items(listaNoticias) { noticia ->
-                            NoticiaItem(noticia)
+                            NoticiaItem(noticia, onClick = {navController.navigate("${Screens.EditarNoticiaScreen.route}/${noticia.idNoticia}")})
                         }
                     }
                 }

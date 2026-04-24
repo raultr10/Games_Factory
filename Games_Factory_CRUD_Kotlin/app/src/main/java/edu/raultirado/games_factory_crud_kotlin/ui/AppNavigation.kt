@@ -9,6 +9,8 @@ import androidx.navigation.compose.rememberNavController
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.AñadirEmpleadoScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.AñadirNoticiaScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.AñadirVideojuegoScreen
+import edu.raultirado.games_factory_crud_kotlin.ui.screens.EditarNoticiaScreen
+import edu.raultirado.games_factory_crud_kotlin.ui.screens.EditarVideojuegoScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.EmpleadosScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.LoginScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.MainScreen
@@ -60,6 +62,17 @@ fun AppNavigation() {
         }
         composable(Screens.AñadirEmpleadosScreen.route) {
             AñadirEmpleadoScreen(navController = navController)
+        }
+        composable("${Screens.EditarVideojuegoScreen.route}/{juegoId}") { backStackEntry ->
+            // Extraemos el ID que viene en la URL
+            val juegoId = backStackEntry.arguments?.getString("juegoId") ?: ""
+            EditarVideojuegoScreen(navController = navController, juegoId = juegoId)
+        }
+
+        composable("${Screens.EditarNoticiaScreen.route}/{noticiaId}") { backStackEntry ->
+            // Extraemos el ID que viene en la URL
+            val noticiaId = backStackEntry.arguments?.getString("noticiaId") ?: ""
+            EditarNoticiaScreen(navController = navController, noticiaId = noticiaId)
         }
     }
 }

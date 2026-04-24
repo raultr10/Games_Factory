@@ -94,7 +94,7 @@ fun VideojuegosScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         items(listaJuegos) { juego ->
-                            VideojuegoItem(juego)
+                            VideojuegoItem(juego, onClick = {navController.navigate("${Screens.EditarVideojuegoScreen.route}/${juego.idProducto}")})
                         }
                     }
                 }
