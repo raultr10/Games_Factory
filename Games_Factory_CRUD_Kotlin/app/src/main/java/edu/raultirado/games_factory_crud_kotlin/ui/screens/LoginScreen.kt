@@ -40,7 +40,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
         OutlinedTextField(
             value = user,
             onValueChange = { user = it },
-            label = { Text("DNI") },
+            label = { Text("Correo electrónico") },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -59,7 +59,9 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
 
         Button(
             onClick = {
-                viewModel.login(user, pass) {
+                viewModel.login(user, pass) { rolUsuario ->
+                    // De momento navegamos normal, en el próximo paso
+                    // le pasaremos este "rolUsuario" al MainScreen.
                     navController.navigate(Screens.MainScreen.route)
                 }
             },

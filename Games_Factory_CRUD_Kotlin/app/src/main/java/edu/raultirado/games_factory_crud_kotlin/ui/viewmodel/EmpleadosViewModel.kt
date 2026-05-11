@@ -3,15 +3,15 @@ package edu.raultirado.games_factory_crud_kotlin.ui.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import edu.raultirado.games_factory_crud_kotlin.data.local.GamesFactoryDatabase
-import edu.raultirado.games_factory_crud_kotlin.data.local.LocalDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.model.Empleado
 import edu.raultirado.games_factory_crud_kotlin.data.remote.RemoteDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.repository.Repository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class EmpleadosViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -27,10 +27,8 @@ class EmpleadosViewModel(application: Application) : AndroidViewModel(applicatio
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     init {
-        val database = GamesFactoryDatabase.getInstance(application)
-        val localDatasource = LocalDatasource(usuarioDao = database.usuarioDao())
         val remoteDatasource = RemoteDatasource()
-        repository = Repository(localDatasource, remoteDatasource)
+        repository = Repository(remoteDatasource)
 
         fetchEmpleados()
     }
@@ -46,6 +44,40 @@ class EmpleadosViewModel(application: Application) : AndroidViewModel(applicatio
                 _errorMessage.value = "Error: ${e.message}"
             } finally {
                 _isLoading.value = false
+            }
+        }
+    }
+
+    fun registrarNuevoEmpleado(
+        dni: String, nombre: String, apellidos: String, correo: String,
+        contrasena: String, direccion: String, fechaNaci: String,
+        telefono: String, cp: String, rol: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        // Pequeña validación para que no metan datos vacíos
+        if (dni.isBlank() || nombre.isBlank() || correo.isBlank() || contrasena.isBlank()) {
+            onError("DNI, Nombre, Correo y Contraseña son obligatorios")
+            return
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val exito = repository.registrarEmpleado(
+                    dni, nombre, apellidos, correo, contrasena, direccion, fechaNaci, telefono, cp, rol
+                )
+                withContext(Dispatchers.Main) {
+                    if (exito) {
+                        fetchEmpleados() // Recargamos la lista para que aparezca el nuevo
+                        onSuccess()      // Volvemos a la pantalla anterior
+                    } else {
+                        onError("Error al guardar. ¿Quizás el DNI ya existe?")
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    onError("Error de conexión: ${e.message}")
+                }
             }
         }
     }

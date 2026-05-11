@@ -3,8 +3,6 @@ package edu.raultirado.games_factory_crud_kotlin.ui.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import edu.raultirado.games_factory_crud_kotlin.data.local.GamesFactoryDatabase
-import edu.raultirado.games_factory_crud_kotlin.data.local.LocalDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.model.Videojuego
 import edu.raultirado.games_factory_crud_kotlin.data.remote.RemoteDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.repository.Repository
@@ -30,13 +28,9 @@ class VideojuegosViewModel(application: Application) : AndroidViewModel(applicat
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     init {
-        val database = GamesFactoryDatabase.getInstance(application)
-
-        val localDatasource = LocalDatasource(usuarioDao = database.usuarioDao())
-
         val remoteDataSource = RemoteDatasource()
 
-        repository = Repository(localDatasource, remoteDataSource)
+        repository = Repository(remoteDataSource)
 
         fetchVideojuegos()
     }

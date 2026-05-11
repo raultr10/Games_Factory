@@ -5,6 +5,7 @@ import edu.raultirado.games_factory_crud_kotlin.data.model.Noticia
 import edu.raultirado.games_factory_crud_kotlin.data.model.Videojuego
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.security.MessageDigest
 import java.sql.ResultSet
 import java.sql.Statement
 
@@ -123,5 +124,121 @@ class RemoteDatasource {
             throw Exception("No hay conexión con la base de datos.")
         }
         return@withContext lista
+    }
+    private fun hashSHA256(rawData: String): String {
+        val bytes = rawData.toByteArray(Charsets.UTF_8)
+        val md = MessageDigest.getInstance("SHA-256")
+        val digest = md.digest(bytes)
+
+        // Lo convertimos a Hexadecimal en MAYÚSCULAS (el equivalente a "X2")
+        return digest.joinToString("") { "%02X".format(it) }
+    }
+    // Devuelve el rol ("Empleado_Admin" o "Empleado_Normal") o null si el login falla
+    fun loginEmpleado(correo: String, contrasenaLimpia: String): String? {
+        // 1. Encriptamos la contraseña tal cual se hace en tu C#
+        val contrasenaEncriptada = hashSHA256(contrasenaLimpia)
+        var rol: String? = null
+
+        val connection = DbConnection.getConnection()
+        try {
+            if (connection != null) {
+                // 2. Buscamos el empleado y hacemos un JOIN con su categoría
+                val query = """
+                    SELECT c.tipo_empleado 
+                    FROM Empleado e
+                    INNER JOIN categoria_empleado c ON e.ID_emp = c.ID_emp
+                    WHERE e.correo_emp = ? AND e.contrasena_emp = ?
+                """
+
+                val statement = connection.prepareStatement(query)
+                statement.setString(1, correo)
+                statement.setString(2, contrasenaEncriptada) // Mandamos el Hash largo
+
+                val resultSet = statement.executeQuery()
+
+                // Si hay resultados, significa que las credenciales son correctas
+                if (resultSet.next()) {
+                    rol = resultSet.getString("tipo_empleado")
+                }
+
+                resultSet.close()
+                statement.close()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            connection?.close()
+        }
+
+        return rol // Devolverá "Empleado_Admin", "Empleado_Normal" o null si se equivocó
+    }
+    // Añade esto en tu RemoteDatasource.kt
+    fun registrarEmpleado(
+        dni: String, nombre: String, apellidos: String, correo: String,
+        contrasenaLimpia: String, direccion: String, fechaNaci: String,
+        telefono: String, cp: String, rol: String
+    ): Boolean {
+        var exito = false
+        val connection = DbConnection.getConnection()
+
+        try {
+            if (connection != null) {
+                // 1. Desactivamos el auto-guardado para hacer una Transacción segura
+                connection.autoCommit = false
+
+                // 2. Encriptamos la contraseña con la función que hicimos antes
+                val contrasenaHash = hashSHA256(contrasenaLimpia)
+
+                // 3. INSERTAR EN LA TABLA EMPLEADOS (¡Con los nombres corregidos!)
+                val queryEmpleado = """
+                    INSERT INTO Empleado 
+                    (ID_emp, nombre_emp, apellidos_emp, correo_emp, contrasena_emp, direccion, fecha_naci, telefono, codigo_postal) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """.trimIndent()
+
+                val stmtEmpleado = connection.prepareStatement(queryEmpleado)
+                stmtEmpleado.setString(1, dni)
+                stmtEmpleado.setString(2, nombre)
+                stmtEmpleado.setString(3, apellidos)
+                stmtEmpleado.setString(4, correo)
+                stmtEmpleado.setString(5, contrasenaHash)
+                stmtEmpleado.setString(6, direccion) // Corregido
+                stmtEmpleado.setString(7, fechaNaci) // Corregido
+                stmtEmpleado.setString(8, telefono)  // Corregido
+                stmtEmpleado.setString(9, cp)        // Corregido (codigo_postal)
+
+                stmtEmpleado.executeUpdate()
+                stmtEmpleado.close()
+
+                // 4. INSERTAR EN LA TABLA CATEGORIA_EMPLEADO
+                val queryCategoria = "INSERT INTO categoria_empleado (ID_emp, tipo_empleado) VALUES (?, ?)"
+                val stmtCategoria = connection.prepareStatement(queryCategoria)
+                stmtCategoria.setString(1, dni)
+                stmtCategoria.setString(2, rol)
+
+                stmtCategoria.executeUpdate()
+                stmtCategoria.close()
+
+                // 5. Si todo ha ido bien, CONFIRMAMOS el guardado
+                connection.commit()
+                exito = true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // Si algo falla, deshacemos los cambios
+            try {
+                connection?.rollback()
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+        } finally {
+            try {
+                connection?.autoCommit = true
+                connection?.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        return exito
     }
 }

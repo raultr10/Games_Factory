@@ -3,8 +3,6 @@ package edu.raultirado.games_factory_crud_kotlin.ui.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import edu.raultirado.games_factory_crud_kotlin.data.local.GamesFactoryDatabase
-import edu.raultirado.games_factory_crud_kotlin.data.local.LocalDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.model.Noticia
 import edu.raultirado.games_factory_crud_kotlin.data.remote.RemoteDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.repository.Repository
@@ -27,10 +25,8 @@ class NoticiasViewModel(application: Application) : AndroidViewModel(application
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     init {
-        val database = GamesFactoryDatabase.getInstance(application)
-        val localDatasource = LocalDatasource(usuarioDao = database.usuarioDao())
         val remoteDatasource = RemoteDatasource()
-        repository = Repository(localDatasource, remoteDatasource)
+        repository = Repository(remoteDatasource)
 
         fetchNoticias()
     }
