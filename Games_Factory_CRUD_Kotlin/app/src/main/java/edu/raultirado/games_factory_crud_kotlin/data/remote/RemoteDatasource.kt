@@ -189,6 +189,14 @@ class RemoteDatasource {
                 // 2. Encriptamos la contraseña con la función que hicimos antes
                 val contrasenaHash = hashSHA256(contrasenaLimpia)
 
+                val fechaArreglada = if (fechaNaci.contains("/")) {
+                    val trozos = fechaNaci.split("/")
+                    // Ponemos: Año - Mes - Día
+                    "${trozos[2]}-${trozos[1]}-${trozos[0]}"
+                } else {
+                    fechaNaci
+                }
+
                 // 3. INSERTAR EN LA TABLA EMPLEADOS (¡Con los nombres corregidos!)
                 val queryEmpleado = """
                     INSERT INTO Empleado 
@@ -203,7 +211,7 @@ class RemoteDatasource {
                 stmtEmpleado.setString(4, correo)
                 stmtEmpleado.setString(5, contrasenaHash)
                 stmtEmpleado.setString(6, direccion) // Corregido
-                stmtEmpleado.setString(7, fechaNaci) // Corregido
+                stmtEmpleado.setString(7, fechaArreglada)
                 stmtEmpleado.setString(8, telefono)  // Corregido
                 stmtEmpleado.setString(9, cp)        // Corregido (codigo_postal)
 

@@ -24,6 +24,7 @@ import edu.raultirado.games_factory_crud_kotlin.ui.viewmodel.VideojuegosViewMode
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+    val empleadosViewModelCompartido: EmpleadosViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -34,8 +35,12 @@ fun AppNavigation() {
             LoginScreen(navController, loginViewModel)
         }
 
-        composable(Screens.MainScreen.route) {
-            MainScreen(navController)
+        composable("${Screens.MainScreen.route}/{rol}") { backStackEntry ->
+            // Extraemos el rol que nos ha mandado el Login
+            val rolUsuario = backStackEntry.arguments?.getString("rol") ?: "Empleado_Normal"
+
+            // Se lo pasamos a la pantalla
+            MainScreen(navController = navController, rol = rolUsuario)
         }
 
         composable(Screens.VideojuegosScreen.route) {
@@ -44,8 +49,7 @@ fun AppNavigation() {
         }
 
         composable(Screens.EmpleadosScreen.route) {
-            val viewModel: EmpleadosViewModel = viewModel()
-            EmpleadosScreen(navController = navController, viewModel = viewModel)
+            EmpleadosScreen(navController = navController, viewModel = empleadosViewModelCompartido)
         }
 
         composable(Screens.NoticiasScreen.route) {
@@ -61,7 +65,7 @@ fun AppNavigation() {
             AñadirNoticiaScreen(navController = navController)
         }
         composable(Screens.AñadirEmpleadosScreen.route) {
-            AñadirEmpleadoScreen(navController = navController)
+            AñadirEmpleadoScreen(navController = navController, viewModel = empleadosViewModelCompartido)
         }
         composable("${Screens.EditarVideojuegoScreen.route}/{juegoId}") { backStackEntry ->
             // Extraemos el ID que viene en la URL

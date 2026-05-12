@@ -1,24 +1,19 @@
 package edu.raultirado.games_factory_crud_kotlin.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.VideogameAsset
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -30,44 +25,112 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
     var user by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    // Surface actúa como fondo principal de la pantalla
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
-        Text(text = "LOGIN", style = MaterialTheme.typography.headlineLarge)
-
-        OutlinedTextField(
-            value = user,
-            onValueChange = { user = it },
-            label = { Text("Correo electrónico") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = pass,
-            onValueChange = { pass = it },
-            label = { Text("Contraseña") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        // Mostramos el error si el ViewModel lo indica
-        if (viewModel.loginError.isNotEmpty()) {
-            Text(text = viewModel.loginError, color = Color.Red)
-        }
-
-        Button(
-            onClick = {
-                viewModel.login(user, pass) { rolUsuario ->
-                    // De momento navegamos normal, en el próximo paso
-                    // le pasaremos este "rolUsuario" al MainScreen.
-                    navController.navigate(Screens.MainScreen.route)
-                }
-            },
-            modifier = Modifier.padding(top = 16.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp), // Más margen para que no se pegue a los bordes
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text("Entrar")
+            // --- LOGO (Icono) ---
+            Icon(
+                imageVector = Icons.Default.VideogameAsset,
+                contentDescription = "Logo Games Factory",
+                modifier = Modifier.size(80.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // --- TÍTULO Y SUBTÍTULO ---
+            Text(
+                text = "Games Factory",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = "Panel de Administración",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            // --- CAMPO CORREO ---
+            OutlinedTextField(
+                value = user,
+                onValueChange = { user = it },
+                label = { Text("Correo electrónico") },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Email, contentDescription = "Email Icon")
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                shape = RoundedCornerShape(16.dp), // Bordes bien redonditos
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // --- CAMPO CONTRASEÑA ---
+            OutlinedTextField(
+                value = pass,
+                onValueChange = { pass = it },
+                label = { Text("Contraseña") },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Lock, contentDescription = "Lock Icon")
+                },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                shape = RoundedCornerShape(16.dp),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // --- MENSAJE DE ERROR ---
+            // Ocupa un espacio fijo para que los botones no salten de golpe al aparecer el error
+            Box(modifier = Modifier.height(24.dp), contentAlignment = Alignment.Center) {
+                if (viewModel.loginError.isNotEmpty()) {
+                    Text(
+                        text = viewModel.loginError,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // --- BOTÓN ENTRAR ---
+            Button(
+                onClick = {
+                    viewModel.login(user, pass) { rolUsuario ->
+                        navController.navigate("${Screens.MainScreen.route}/$rolUsuario")
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(55.dp), // Botón alto, al estilo de las apps de Google
+                shape = RoundedCornerShape(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Text(
+                    text = "ENTRAR",
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
         }
     }
 }

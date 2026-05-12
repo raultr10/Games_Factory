@@ -27,7 +27,7 @@ fun NoticiaItem(noticia: Noticia, onClick: () -> Unit) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            val rutaImagen = "http://192.168.1.40:8085/${noticia.imagen}"
+            val rutaImagen = "http://192.168.68.120:8085/${noticia.imagen}"
 
             AsyncImage(
                 model = rutaImagen,
