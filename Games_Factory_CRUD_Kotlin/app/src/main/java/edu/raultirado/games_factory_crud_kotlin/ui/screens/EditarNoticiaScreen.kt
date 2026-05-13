@@ -1,7 +1,6 @@
 package edu.raultirado.games_factory_crud_kotlin.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +29,7 @@ import edu.raultirado.games_factory_crud_kotlin.ui.viewmodel.NoticiasViewModel
 fun EditarNoticiaScreen(
     navController: NavController,
     noticiaId: String,
-    viewModel: NoticiasViewModel // Usamos el compartido
+    viewModel: NoticiasViewModel
 ) {
     val listaNoticias by viewModel.noticias.collectAsState()
     val noticiaReal = listaNoticias.find { it.idNoticia == noticiaId }
@@ -44,7 +43,6 @@ fun EditarNoticiaScreen(
     var fechaCreacion by remember { mutableStateOf("") }
     var categoriaNoticia by remember { mutableStateOf("") }
 
-    // --- SINCRONIZACIÓN ---
     LaunchedEffect(noticiaReal) {
         noticiaReal?.let {
             titulo = it.titulo
@@ -55,19 +53,22 @@ fun EditarNoticiaScreen(
         }
     }
 
-    // OPCIONES CORREGIDAS
     val opcionesCategoriaNoticia = listOf("Playstation", "Nintendo", "Xbox", "PC")
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (isEditing) "Editando Noticia" else "Detalles de la Noticia") },
+                title = { Text(if (isEditing) "Editando Noticia" else "Lectura de Noticia", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                )
             )
         }
     ) { paddingValues ->
@@ -81,113 +82,79 @@ fun EditarNoticiaScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            // --- IMAGEN DESDE NGINX (Con tu IP real) ---
-            if (noticiaReal != null && noticiaReal.imagen.isNotEmpty()) {
-                val rutaLimpia = noticiaReal.imagen.removePrefix("/")
-                val urlFinal = "http://192.168.68.125:8085/$rutaLimpia"
+            // --- SECCIÓN 1: BANNER DE IMAGEN ---
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center
+            ) {
+                if (noticiaReal != null && noticiaReal.imagen.isNotEmpty()) {
+                    val rutaLimpia = noticiaReal.imagen.removePrefix("/")
+                    val urlFinal = "http://192.168.68.125:8085/$rutaLimpia"
 
-                AsyncImage(
-                    model = urlFinal,
-                    contentDescription = "Imagen de la noticia",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .border(1.5.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(12.dp)),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .background(Color.LightGray, RoundedCornerShape(12.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
+                    AsyncImage(
+                        model = urlFinal,
+                        contentDescription = "Imagen de la noticia",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
                     Icon(Icons.Default.Image, contentDescription = null, modifier = Modifier.size(64.dp), tint = Color.Gray)
                 }
             }
 
-            // CAMPOS VINCULADOS A 'isEditing'
-            FormTextField(value = titulo, onValueChange = { titulo = it }, label = "Título:", enabled = isEditing)
+            // --- SECCIÓN 2: REDACCIÓN ---
+            ElevatedCard(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("Contenido de la Noticia", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
 
-            FormTextField(
-                value = descripcion,
-                onValueChange = { descripcion = it },
-                label = "Descripción:",
-                isSingleLine = false,
-                enabled = isEditing
-            )
-
-            FormTextField(
-                value = historia,
-                onValueChange = { historia = it },
-                label = "Historia:",
-                isSingleLine = false,
-                modifier = Modifier.heightIn(min = 200.dp),
-                enabled = isEditing
-            )
-
-            FormDatePickerField(
-                selectedDate = fechaCreacion,
-                onDateSelected = { if (isEditing) fechaCreacion = it },
-                label = "Fecha Creación:"
-            )
-
-            FormDropdownField(
-                selectedItem = categoriaNoticia,
-                onItemSelected = { categoriaNoticia = it },
-                label = "Categoría:",
-                options = opcionesCategoriaNoticia,
-                enabled = isEditing
-            )
-
-            if (mensajeError.isNotEmpty()) {
-                Text(text = mensajeError, color = Color.Red, fontWeight = FontWeight.Bold)
+                    Text("ID: $noticiaId", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium, color = Color.Gray)
+                    FormTextField(value = titulo, onValueChange = { titulo = it }, label = "Titular:", enabled = isEditing)
+                    FormTextField(
+                        value = descripcion, onValueChange = { descripcion = it }, label = "Entradilla (Resumen):",
+                        isSingleLine = false, enabled = isEditing
+                    )
+                    FormTextField(
+                        value = historia, onValueChange = { historia = it }, label = "Cuerpo de la noticia:",
+                        isSingleLine = false, modifier = Modifier.heightIn(min = 180.dp), enabled = isEditing
+                    )
+                }
             }
 
-            // LÓGICA DE BOTONES Y CONEXIÓN AL VIEWMODEL
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            // --- SECCIÓN 3: METADATOS ---
+            ElevatedCard(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("Publicación", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+
+                    FormDatePickerField(
+                        selectedDate = fechaCreacion, onDateSelected = { if (isEditing) fechaCreacion = it },
+                        label = "Fecha de Publicación:"
+                    )
+                    FormDropdownField(
+                        selectedItem = categoriaNoticia, onItemSelected = { categoriaNoticia = it },
+                        label = "Plataforma / Categoría:", options = opcionesCategoriaNoticia, enabled = isEditing
+                    )
+                }
+            }
+
+            if (mensajeError.isNotEmpty()) {
+                Text(text = mensajeError, color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
+            }
+
+            // --- BOTONES DINÁMICOS ---
+            Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 if (!isEditing) {
-                    Button(onClick = { isEditing = true }, modifier = Modifier.weight(1f)) {
-                        Text("Editar", fontWeight = FontWeight.Bold)
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    OutlinedButton(onClick = { navController.popBackStack() }, modifier = Modifier.weight(1f)) {
-                        Text("Volver", fontWeight = FontWeight.Bold)
+                    Button(onClick = { isEditing = true }, modifier = Modifier.weight(1f).height(50.dp)) {
+                        Text("EDITAR NOTICIA", fontWeight = FontWeight.Bold)
                     }
                 } else {
-                    Button(
-                        onClick = {
-                            // LLAMAMOS A LA FUNCIÓN DE GUARDAR
-                            viewModel.actualizarNoticiaExistente(
-                                idNoticia = noticiaId,
-                                titulo = titulo,
-                                descripcion = descripcion,
-                                historia = historia,
-                                fechaCreacion = fechaCreacion,
-                                categoria = categoriaNoticia,
-                                onSuccess = {
-                                    isEditing = false
-                                    mensajeError = ""
-                                },
-                                onError = { error -> mensajeError = error }
-                            )
-                        },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Guardar", fontWeight = FontWeight.Bold)
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
                     OutlinedButton(
                         onClick = {
                             isEditing = false
                             mensajeError = ""
-                            // Restauramos si cancela
                             noticiaReal?.let {
                                 titulo = it.titulo
                                 descripcion = it.descripcion
@@ -196,13 +163,27 @@ fun EditarNoticiaScreen(
                                 categoriaNoticia = it.categoriaNoticia
                             }
                         },
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
+                        modifier = Modifier.weight(1f).height(50.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
                     ) {
-                        Text("Cancelar", fontWeight = FontWeight.Bold)
+                        Text("CANCELAR", fontWeight = FontWeight.Bold)
+                    }
+                    Button(
+                        onClick = {
+                            viewModel.actualizarNoticiaExistente(
+                                idNoticia = noticiaId, titulo = titulo, descripcion = descripcion,
+                                historia = historia, fechaCreacion = fechaCreacion, categoria = categoriaNoticia,
+                                onSuccess = { isEditing = false; mensajeError = "" },
+                                onError = { error -> mensajeError = error }
+                            )
+                        },
+                        modifier = Modifier.weight(1f).height(50.dp)
+                    ) {
+                        Text("GUARDAR", fontWeight = FontWeight.Bold)
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

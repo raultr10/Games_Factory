@@ -1,7 +1,6 @@
 package edu.raultirado.games_factory_crud_kotlin.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,7 +30,7 @@ import edu.raultirado.games_factory_crud_kotlin.ui.viewmodel.VideojuegosViewMode
 fun EditarVideojuegoScreen(
     navController: NavController,
     juegoId: String,
-    viewModel: VideojuegosViewModel // Usar el compartido desde AppNavigation
+    viewModel: VideojuegosViewModel
 ) {
     val listaJuegos by viewModel.videojuegos.collectAsState()
     val juegoReal = listaJuegos.find { it.idProducto == juegoId }
@@ -71,13 +70,17 @@ fun EditarVideojuegoScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (isEditing) "Editando Videojuego" else "Detalles del Videojuego") },
+                title = { Text(if (isEditing) "Editando Videojuego" else "Ficha del Videojuego", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
+                )
             )
         }
     ) { paddingValues ->
@@ -91,13 +94,12 @@ fun EditarVideojuegoScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            // --- CAJA DE LA IMAGEN (Muestra la foto del servidor) ---
+            // --- SECCIÓN 1: IMAGEN ---
             Box(
                 modifier = Modifier
-                    .size(200.dp, 300.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.LightGray)
-                    .border(1.dp, Color.Black, RoundedCornerShape(8.dp)),
+                    .size(200.dp, 280.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
                 if (juegoReal != null && juegoReal.imagen.isNotEmpty()) {
@@ -112,89 +114,60 @@ fun EditarVideojuegoScreen(
                 }
             }
 
-            FormTextField(value = nombre, onValueChange = { nombre = it }, label = "Nombre:", enabled = isEditing)
+            // --- SECCIÓN 2: INFORMACIÓN GENERAL ---
+            ElevatedCard(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("Información General", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
 
-            FormTextField(
-                value = descripcion,
-                onValueChange = { descripcion = it },
-                label = "Descripción:",
-                isSingleLine = false,
-                modifier = Modifier.heightIn(min = 120.dp),
-                enabled = isEditing
-            )
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                FormTextField(
-                    value = anyo,
-                    onValueChange = { if (it.all { char -> char.isDigit() }) anyo = it },
-                    label = "Año:",
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.weight(1f),
-                    enabled = isEditing
-                )
-                FormTextField(
-                    value = precio,
-                    onValueChange = { if (it.isEmpty() || it.matches(Regex("""^[\d.,]*$"""))) precio = it },
-                    label = "Precio:",
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    modifier = Modifier.weight(1f),
-                    enabled = isEditing
-                )
+                    Text("ID: $juegoId", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium, color = Color.Gray)
+                    FormTextField(value = nombre, onValueChange = { nombre = it }, label = "Nombre:", enabled = isEditing)
+                    FormTextField(
+                        value = descripcion, onValueChange = { descripcion = it }, label = "Descripción:",
+                        isSingleLine = false, modifier = Modifier.heightIn(min = 100.dp), enabled = isEditing
+                    )
+                }
             }
 
-            FormDropdownField(selectedItem = categoria, onItemSelected = { categoria = it }, label = "Categoría:", options = opcionesCategoria, enabled = isEditing)
-            FormDropdownField(selectedItem = tipoConsola, onItemSelected = { tipoConsola = it }, label = "Tipo Consola:", options = opcionesConsola, enabled = isEditing)
-            FormDropdownField(selectedItem = idioma, onItemSelected = { idioma = it }, label = "Idioma:", options = opcionesIdioma, enabled = isEditing)
-            FormDropdownField(selectedItem = compania, onItemSelected = { compania = it }, label = "Compañía:", options = opcionesCompania, enabled = isEditing)
+            // --- SECCIÓN 3: DETALLES COMERCIALES ---
+            ElevatedCard(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("Detalles y Clasificación", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        FormTextField(
+                            value = anyo, onValueChange = { if (it.all { char -> char.isDigit() }) anyo = it },
+                            label = "Año:", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier.weight(1f), enabled = isEditing
+                        )
+                        FormTextField(
+                            value = precio, onValueChange = { if (it.isEmpty() || it.matches(Regex("""^[\d.,]*$"""))) precio = it },
+                            label = "Precio (€):", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                            modifier = Modifier.weight(1f), enabled = isEditing
+                        )
+                    }
+
+                    FormDropdownField(selectedItem = categoria, onItemSelected = { categoria = it }, label = "Categoría:", options = opcionesCategoria, enabled = isEditing)
+                    FormDropdownField(selectedItem = tipoConsola, onItemSelected = { tipoConsola = it }, label = "Plataforma:", options = opcionesConsola, enabled = isEditing)
+                    FormDropdownField(selectedItem = idioma, onItemSelected = { idioma = it }, label = "Idioma:", options = opcionesIdioma, enabled = isEditing)
+                    FormDropdownField(selectedItem = compania, onItemSelected = { compania = it }, label = "Desarrollador:", options = opcionesCompania, enabled = isEditing)
+                }
+            }
 
             if (mensajeError.isNotEmpty()) {
-                Text(text = mensajeError, color = Color.Red, fontWeight = FontWeight.Bold)
+                Text(text = mensajeError, color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
             }
 
-            // --- BOTONES ---
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            // --- BOTONES DINÁMICOS ---
+            Row(modifier = Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 if (!isEditing) {
-                    Button(onClick = { isEditing = true }, modifier = Modifier.weight(1f)) {
-                        Text("Editar", fontWeight = FontWeight.Bold)
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    OutlinedButton(onClick = { navController.popBackStack() }, modifier = Modifier.weight(1f)) {
-                        Text("Volver", fontWeight = FontWeight.Bold)
+                    Button(onClick = { isEditing = true }, modifier = Modifier.weight(1f).height(50.dp)) {
+                        Text("EDITAR DATOS", fontWeight = FontWeight.Bold)
                     }
                 } else {
-                    Button(
-                        onClick = {
-                            viewModel.actualizarVideojuegoExistente(
-                                idProducto = juegoId,
-                                nombre = nombre,
-                                descripcion = descripcion,
-                                precioStr = precio,
-                                anyoStr = anyo,
-                                categoria = categoria,
-                                consola = tipoConsola,
-                                idioma = idioma,
-                                compania = compania,
-                                onSuccess = {
-                                    isEditing = false
-                                    mensajeError = ""
-                                },
-                                onError = { error -> mensajeError = error }
-                            )
-                        },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text("Guardar", fontWeight = FontWeight.Bold)
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
                     OutlinedButton(
                         onClick = {
                             isEditing = false
                             mensajeError = ""
-                            // Restauramos los valores originales al cancelar
                             juegoReal?.let {
                                 nombre = it.nombre
                                 descripcion = it.descripcion
@@ -206,13 +179,28 @@ fun EditarVideojuegoScreen(
                                 compania = it.compania
                             }
                         },
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
+                        modifier = Modifier.weight(1f).height(50.dp),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
                     ) {
-                        Text("Cancelar", fontWeight = FontWeight.Bold)
+                        Text("CANCELAR", fontWeight = FontWeight.Bold)
+                    }
+                    Button(
+                        onClick = {
+                            viewModel.actualizarVideojuegoExistente(
+                                idProducto = juegoId, nombre = nombre, descripcion = descripcion,
+                                precioStr = precio, anyoStr = anyo, categoria = categoria,
+                                consola = tipoConsola, idioma = idioma, compania = compania,
+                                onSuccess = { isEditing = false; mensajeError = "" },
+                                onError = { error -> mensajeError = error }
+                            )
+                        },
+                        modifier = Modifier.weight(1f).height(50.dp)
+                    ) {
+                        Text("GUARDAR", fontWeight = FontWeight.Bold)
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
