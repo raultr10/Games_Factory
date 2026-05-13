@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.AñadirEmpleadoScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.AñadirNoticiaScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.AñadirVideojuegoScreen
+import edu.raultirado.games_factory_crud_kotlin.ui.screens.EditarEmpleadoScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.EditarNoticiaScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.EditarVideojuegoScreen
 import edu.raultirado.games_factory_crud_kotlin.ui.screens.EmpleadosScreen
@@ -24,7 +25,11 @@ import edu.raultirado.games_factory_crud_kotlin.ui.viewmodel.VideojuegosViewMode
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
+
+    // VIEWMODELS COMPARTIDOS (Se crean una sola vez)
     val empleadosViewModelCompartido: EmpleadosViewModel = viewModel()
+    val videojuegosViewModelCompartido: VideojuegosViewModel = viewModel()
+    val noticiasViewModelCompartido: NoticiasViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -36,16 +41,13 @@ fun AppNavigation() {
         }
 
         composable("${Screens.MainScreen.route}/{rol}") { backStackEntry ->
-            // Extraemos el rol que nos ha mandado el Login
             val rolUsuario = backStackEntry.arguments?.getString("rol") ?: "Empleado_Normal"
-
-            // Se lo pasamos a la pantalla
             MainScreen(navController = navController, rol = rolUsuario)
         }
 
         composable(Screens.VideojuegosScreen.route) {
-            val viewModel: VideojuegosViewModel = viewModel()
-            VideojuegosScreen(navController = navController, viewModel = viewModel)
+            // Le pasamos el compartido
+            VideojuegosScreen(navController = navController, viewModel = videojuegosViewModelCompartido)
         }
 
         composable(Screens.EmpleadosScreen.route) {
@@ -53,30 +55,50 @@ fun AppNavigation() {
         }
 
         composable(Screens.NoticiasScreen.route) {
-            val viewModel: NoticiasViewModel = viewModel()
-            NoticiasScreen(navController = navController, viewModel = viewModel)
+            NoticiasScreen(navController = navController, viewModel = noticiasViewModelCompartido)
         }
+
         composable(Screens.AñadirVideojuegoScreen.route) {
-            // Creamos una nueva pantalla composable (la definiremos más abajo)
-            AñadirVideojuegoScreen(navController = navController)
+            // Le pasamos el compartido
+            AñadirVideojuegoScreen(navController = navController, viewModel = videojuegosViewModelCompartido)
         }
+
         composable(Screens.AñadirNoticiaScreen.route) {
-            // Creamos una nueva pantalla composable (la definiremos más abajo)
-            AñadirNoticiaScreen(navController = navController)
+            AñadirNoticiaScreen(navController = navController, viewModel = noticiasViewModelCompartido)
         }
+
         composable(Screens.AñadirEmpleadosScreen.route) {
             AñadirEmpleadoScreen(navController = navController, viewModel = empleadosViewModelCompartido)
         }
+
+        // --- RUTAS DE EDICIÓN ---
+
         composable("${Screens.EditarVideojuegoScreen.route}/{juegoId}") { backStackEntry ->
-            // Extraemos el ID que viene en la URL
             val juegoId = backStackEntry.arguments?.getString("juegoId") ?: ""
-            EditarVideojuegoScreen(navController = navController, juegoId = juegoId)
+            EditarVideojuegoScreen(
+                navController = navController,
+                juegoId = juegoId,
+                viewModel = videojuegosViewModelCompartido
+            )
         }
 
         composable("${Screens.EditarNoticiaScreen.route}/{noticiaId}") { backStackEntry ->
-            // Extraemos el ID que viene en la URL
             val noticiaId = backStackEntry.arguments?.getString("noticiaId") ?: ""
-            EditarNoticiaScreen(navController = navController, noticiaId = noticiaId)
+            EditarNoticiaScreen(
+                navController = navController,
+                noticiaId = noticiaId,
+                viewModel = noticiasViewModelCompartido
+            )
+        }
+
+        // NUEVO: Ruta para Editar Empleado con su ViewModel compartido
+        composable("${Screens.EditarEmpleadoScreen.route}/{empleadoId}") { backStackEntry ->
+            val empleadoId = backStackEntry.arguments?.getString("empleadoId") ?: ""
+            EditarEmpleadoScreen(
+                navController = navController,
+                empleadoId = empleadoId,
+                viewModel = empleadosViewModelCompartido
+            )
         }
     }
 }

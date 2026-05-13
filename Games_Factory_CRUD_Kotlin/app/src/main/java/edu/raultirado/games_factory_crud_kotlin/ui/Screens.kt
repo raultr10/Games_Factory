@@ -11,4 +11,6 @@ sealed class Screens(val route: String) {
     object AñadirEmpleadosScreen : Screens("añadir_empleado_screen")
     object EditarVideojuegoScreen : Screens("editar_videojuego_screen")
     object EditarNoticiaScreen : Screens("editar_noticia_screen")
+    object EditarEmpleadoScreen : Screens("editar_empleado_screen")
+
 }

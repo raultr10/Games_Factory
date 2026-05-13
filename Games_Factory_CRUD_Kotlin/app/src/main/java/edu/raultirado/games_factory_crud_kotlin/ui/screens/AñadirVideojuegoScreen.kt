@@ -5,7 +5,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,7 +13,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -30,48 +29,48 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import edu.raultirado.games_factory_crud_kotlin.ui.components.FormDropdownField
 import edu.raultirado.games_factory_crud_kotlin.ui.components.FormTextField
+import edu.raultirado.games_factory_crud_kotlin.ui.viewmodel.VideojuegosViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AñadirVideojuegoScreen(navController: NavController) {
+fun AñadirVideojuegoScreen(navController: NavController, viewModel: VideojuegosViewModel) {
+    var idProducto by rememberSaveable { mutableStateOf("") }
     var nombre by rememberSaveable { mutableStateOf("") }
     var descripcion by rememberSaveable { mutableStateOf("") }
     var precio by rememberSaveable { mutableStateOf("") }
     var anyo by rememberSaveable { mutableStateOf("") }
-    var categoria by rememberSaveable { mutableStateOf("") }
-    var tipoConsola by rememberSaveable { mutableStateOf("") }
-    var idioma by rememberSaveable { mutableStateOf("") }
-    var compania by rememberSaveable { mutableStateOf("") }
 
-    // --- NUEVO ESTADO PARA LA IMAGEN ---
-    // Guardamos la "dirección" temporal (Uri) de la foto que elija el usuario en su móvil
+    var categoria by rememberSaveable { mutableStateOf("Selecciona...") }
+    var tipoConsola by rememberSaveable { mutableStateOf("Selecciona...") }
+    var idioma by rememberSaveable { mutableStateOf("Selecciona...") }
+    var compania by rememberSaveable { mutableStateOf("Selecciona...") }
+
+    var mensajeError by rememberSaveable { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
-    // --- EL LANZADOR DE LA GALERÍA ---
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri ->
-            // Cuando el usuario elige la foto, guardamos su Uri
-            imageUri = uri
-        }
+        onResult = { uri -> imageUri = uri }
     )
 
-    val opcionesCategoria = listOf("Acción", "Aventura", "RPG", "Deportes", "Shooter", "Estrategia")
-    val opcionesConsola = listOf("PS5", "PS4", "Xbox Series X/S", "Xbox One", "Nintendo Switch", "PC")
-    val opcionesIdioma = listOf("Español", "Inglés", "Japonés", "Multilenguaje")
-    val opcionesCompania = listOf("Sony", "Nintendo", "Microsoft", "EA", "Ubisoft", "Square Enix")
+    val opcionesCategoria = listOf("Plataforma", "Acción", "Aventura", "RPG", "Deportes", "Shooter")
+    val opcionesConsola = listOf("Nintendo", "Playstation", "PC", "Xbox")
+    val opcionesIdioma = listOf("SP", "IN", "JP", "ML")
+    val opcionesCompania = listOf("Sony", "Nintendo", "Ubisoft", "EA", "Square Enix", "Microsoft")
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Añadir Nuevo Videojuego") },
+                title = { Text("Añadir Videojuego", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
                 )
             )
         }
@@ -85,89 +84,97 @@ fun AñadirVideojuegoScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-
-            // --- CAJA DE LA IMAGEN ACTUALIZADA ---
+            // --- SECCIÓN 1: FOTO (Diseño más limpio sin bordes negros duros) ---
             Box(
                 modifier = Modifier
-                    .size(200.dp, 300.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.LightGray)
-                    .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
-                    // Hacemos que la caja sea "pulsable" para abrir la galería
+                    .size(200.dp, 280.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
                     .clickable {
-                        photoPickerLauncher.launch(
-                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                        )
+                        photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                     },
                 contentAlignment = Alignment.Center
             ) {
                 if (imageUri != null) {
-                    // Si hay foto, la mostramos con Coil
                     AsyncImage(
-                        model = imageUri,
-                        contentDescription = "Carátula seleccionada",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop // Recorta la imagen para que encaje perfectamente en la caja
+                        model = imageUri, contentDescription = "Carátula",
+                        modifier = Modifier.fillMaxSize(), contentScale = ContentScale.Crop
                     )
                 } else {
-                    // Si no hay foto, mostramos el icono y un pequeño texto de ayuda
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(Icons.Default.Image, contentDescription = "Icono Galería", modifier = Modifier.size(64.dp), tint = Color.Gray)
+                        Icon(Icons.Default.AddPhotoAlternate, contentDescription = "Añadir foto", modifier = Modifier.size(50.dp), tint = MaterialTheme.colorScheme.primary)
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Tocar para añadir foto", color = Color.DarkGray, style = MaterialTheme.typography.labelMedium)
+                        Text(text = "Añadir Carátula", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Medium)
                     }
                 }
             }
 
-            FormTextField(value = nombre, onValueChange = { nombre = it }, label = "Nombre:")
-            FormTextField(
-                value = descripcion,
-                onValueChange = { descripcion = it },
-                label = "Descripción:",
-                isSingleLine = false,
-                modifier = Modifier.heightIn(min = 120.dp)
-            )
+            // --- SECCIÓN 2: INFORMACIÓN GENERAL ---
+            ElevatedCard(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("Información General", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+
+                    FormTextField(value = idProducto, onValueChange = { idProducto = it }, label = "ID Producto (ej: F28.971.452Y):")
+                    FormTextField(value = nombre, onValueChange = { nombre = it }, label = "Nombre del juego:")
+                    FormTextField(value = descripcion, onValueChange = { descripcion = it }, label = "Descripción:", isSingleLine = false, modifier = Modifier.heightIn(min = 100.dp))
+                }
+            }
+
+            // --- SECCIÓN 3: DETALLES COMERCIALES ---
+            ElevatedCard(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("Detalles y Clasificación", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        FormTextField(
+                            value = anyo, onValueChange = { if (it.all { char -> char.isDigit() }) anyo = it },
+                            label = "Año:", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.weight(1f)
+                        )
+                        FormTextField(
+                            value = precio, onValueChange = { if (it.isEmpty() || it.matches(Regex("""^[\d.,]*$"""))) precio = it },
+                            label = "Precio (€):", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), modifier = Modifier.weight(1f)
+                        )
+                    }
+                    FormDropdownField(selectedItem = categoria, onItemSelected = { categoria = it }, label = "Categoría:", options = opcionesCategoria)
+                    FormDropdownField(selectedItem = tipoConsola, onItemSelected = { tipoConsola = it }, label = "Plataforma:", options = opcionesConsola)
+                    FormDropdownField(selectedItem = idioma, onItemSelected = { idioma = it }, label = "Idioma:", options = opcionesIdioma)
+                    FormDropdownField(selectedItem = compania, onItemSelected = { compania = it }, label = "Desarrollador:", options = opcionesCompania)
+                }
+            }
+
+            if (mensajeError.isNotEmpty()) {
+                Text(text = mensajeError, color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
+            }
+
+            // --- BOTONES ---
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                FormTextField(
-                    value = anyo,
-                    onValueChange = { if (it.all { char -> char.isDigit() }) anyo = it },
-                    label = "Año:",
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.weight(1f)
-                )
-
-                FormTextField(
-                    value = precio,
-                    onValueChange = {
-                        if (it.isEmpty() || it.matches(Regex("""^[\d.,]*$"""))) precio = it
-                    },
-                    label = "Precio:",
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            FormDropdownField(selectedItem = categoria, onItemSelected = { categoria = it }, label = "Categoría:", options = opcionesCategoria)
-            FormDropdownField(selectedItem = tipoConsola, onItemSelected = { tipoConsola = it }, label = "Tipo Consola:", options = opcionesConsola)
-            FormDropdownField(selectedItem = idioma, onItemSelected = { idioma = it }, label = "Idioma:", options = opcionesIdioma)
-            FormDropdownField(selectedItem = compania, onItemSelected = { compania = it }, label = "Compañía:", options = opcionesCompania)
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(onClick = { /* Lógica Insertar */ }, modifier = Modifier.weight(1f)) {
-                    Text("Insertar", fontWeight = FontWeight.Bold)
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                OutlinedButton(onClick = { navController.popBackStack() }, modifier = Modifier.weight(1f)) {
+                OutlinedButton(
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier.weight(1f).height(50.dp)
+                ) {
                     Text("Cancelar", fontWeight = FontWeight.Bold)
                 }
+                Button(
+                    onClick = {
+                        if (categoria == "Selecciona..." || tipoConsola == "Selecciona..." || idioma == "Selecciona..." || compania == "Selecciona...") {
+                            mensajeError = "Por favor, completa todos los campos desplegables."
+                        } else {
+                            viewModel.registrarNuevoVideojuego(
+                                idProducto, nombre, descripcion, precio, anyo, categoria, tipoConsola, idioma, compania,
+                                onSuccess = { navController.popBackStack() },
+                                onError = { error -> mensajeError = error }
+                            )
+                        }
+                    },
+                    modifier = Modifier.weight(1f).height(50.dp)
+                ) {
+                    Text("Insertar", fontWeight = FontWeight.Bold)
+                }
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

@@ -4,7 +4,7 @@ import java.sql.Connection
 import java.sql.DriverManager
 
 object DbConnection {
-    private const val URL = "jdbc:jtds:sqlserver://192.168.68.120:1433;databaseName=Games_Factory;ssl=request=false"
+    private const val URL = "jdbc:jtds:sqlserver://192.168.68.125:1433;databaseName=Games_Factory;ssl=request=false"
     private const val USER = "sa"
     private const val PASS = "Password123!"
 

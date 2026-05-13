@@ -31,4 +31,37 @@ class Repository(
             dni, nombre, apellidos, correo, contrasenaLimpia, direccion, fechaNaci, telefono, cp, rol
         )
     }
+    suspend fun registrarVideojuego(
+        idProducto: String, nombre: String, descripcion: String, precio: Double, anyo: Int,
+        categoria: String, consola: String, idioma: String, compania: String, nombreImagen: String
+    ): Boolean {
+        return remoteDatasource.registrarVideojuego(
+            idProducto, nombre, descripcion, precio, anyo, categoria, consola, idioma, compania, nombreImagen
+        )
+    }
+    suspend fun actualizarVideojuego(
+        idProducto: String, nombre: String, descripcion: String, precio: Double, anyo: Int,
+        categoria: String, consola: String, idioma: String, compania: String
+    ): Boolean {
+        return remoteDatasource.actualizarVideojuego(
+            idProducto, nombre, descripcion, precio, anyo, categoria, consola, idioma, compania
+        )
+    }
+    suspend fun registrarNoticia(
+        idNoticia: String, titulo: String, descripcion: String, historia: String,
+        fechaCreacion: String, categoria: String, nombreImagen: String
+    ): Boolean {
+        return remoteDatasource.registrarNoticia(idNoticia, titulo, descripcion, historia, fechaCreacion, categoria, nombreImagen)
+    }
+
+    suspend fun actualizarNoticia(
+        idNoticia: String, titulo: String, descripcion: String, historia: String,
+        fechaCreacion: String, categoria: String
+    ): Boolean {
+        return remoteDatasource.actualizarNoticia(idNoticia, titulo, descripcion, historia, fechaCreacion, categoria)
+    }
+    suspend fun actualizarEmpleado(
+        idEmp: String, nombre: String, apellidos: String, correo: String,
+        direccion: String, fechaNaci: String, telefono: String, cp: String, rol: String
+    ): Boolean = remoteDatasource.actualizarEmpleado(idEmp, nombre, apellidos, correo, direccion, fechaNaci, telefono, cp, rol)
 }

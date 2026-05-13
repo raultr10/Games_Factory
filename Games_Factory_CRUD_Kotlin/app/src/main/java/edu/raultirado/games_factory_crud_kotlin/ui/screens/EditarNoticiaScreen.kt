@@ -15,10 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import edu.raultirado.games_factory_crud_kotlin.ui.components.FormDatePickerField
 import edu.raultirado.games_factory_crud_kotlin.ui.components.FormDropdownField
 import edu.raultirado.games_factory_crud_kotlin.ui.components.FormTextField
@@ -29,12 +30,13 @@ import edu.raultirado.games_factory_crud_kotlin.ui.viewmodel.NoticiasViewModel
 fun EditarNoticiaScreen(
     navController: NavController,
     noticiaId: String,
-    viewModel: NoticiasViewModel = viewModel()
+    viewModel: NoticiasViewModel // Usamos el compartido
 ) {
     val listaNoticias by viewModel.noticias.collectAsState()
-    val noticiaReal = listaNoticias.find { it.idNoticia.toString() == noticiaId }
+    val noticiaReal = listaNoticias.find { it.idNoticia == noticiaId }
 
     var isEditing by remember { mutableStateOf(false) }
+    var mensajeError by remember { mutableStateOf("") }
 
     var titulo by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
@@ -53,7 +55,8 @@ fun EditarNoticiaScreen(
         }
     }
 
-    val opcionesCategoriaNoticia = listOf("Lanzamiento", "Actualización", "Rumor", "Análisis", "Evento")
+    // OPCIONES CORREGIDAS
+    val opcionesCategoriaNoticia = listOf("Playstation", "Nintendo", "Xbox", "PC")
 
     Scaffold(
         topBar = {
@@ -77,16 +80,32 @@ fun EditarNoticiaScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.LightGray)
-                    .border(1.dp, Color.Black, RoundedCornerShape(8.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(Icons.Default.Image, contentDescription = "Icono Galería", modifier = Modifier.size(64.dp), tint = Color.Gray)
+
+            // --- IMAGEN DESDE NGINX (Con tu IP real) ---
+            if (noticiaReal != null && noticiaReal.imagen.isNotEmpty()) {
+                val rutaLimpia = noticiaReal.imagen.removePrefix("/")
+                val urlFinal = "http://192.168.68.125:8085/$rutaLimpia"
+
+                AsyncImage(
+                    model = urlFinal,
+                    contentDescription = "Imagen de la noticia",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .border(1.5.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(12.dp)),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .background(Color.LightGray, RoundedCornerShape(12.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Default.Image, contentDescription = null, modifier = Modifier.size(64.dp), tint = Color.Gray)
+                }
             }
 
             // CAMPOS VINCULADOS A 'isEditing'
@@ -111,7 +130,7 @@ fun EditarNoticiaScreen(
 
             FormDatePickerField(
                 selectedDate = fechaCreacion,
-                onDateSelected = { if (isEditing) fechaCreacion = it }, // Protegemos el onClick interno del calendario
+                onDateSelected = { if (isEditing) fechaCreacion = it },
                 label = "Fecha Creación:"
             )
 
@@ -123,7 +142,11 @@ fun EditarNoticiaScreen(
                 enabled = isEditing
             )
 
-            // LÓGICA DE BOTONES
+            if (mensajeError.isNotEmpty()) {
+                Text(text = mensajeError, color = Color.Red, fontWeight = FontWeight.Bold)
+            }
+
+            // LÓGICA DE BOTONES Y CONEXIÓN AL VIEWMODEL
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
@@ -139,14 +162,40 @@ fun EditarNoticiaScreen(
                     }
                 } else {
                     Button(
-                        onClick = { isEditing = false },
+                        onClick = {
+                            // LLAMAMOS A LA FUNCIÓN DE GUARDAR
+                            viewModel.actualizarNoticiaExistente(
+                                idNoticia = noticiaId,
+                                titulo = titulo,
+                                descripcion = descripcion,
+                                historia = historia,
+                                fechaCreacion = fechaCreacion,
+                                categoria = categoriaNoticia,
+                                onSuccess = {
+                                    isEditing = false
+                                    mensajeError = ""
+                                },
+                                onError = { error -> mensajeError = error }
+                            )
+                        },
                         modifier = Modifier.weight(1f)
                     ) {
                         Text("Guardar", fontWeight = FontWeight.Bold)
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     OutlinedButton(
-                        onClick = { isEditing = false },
+                        onClick = {
+                            isEditing = false
+                            mensajeError = ""
+                            // Restauramos si cancela
+                            noticiaReal?.let {
+                                titulo = it.titulo
+                                descripcion = it.descripcion
+                                historia = it.historia
+                                fechaCreacion = it.fechaCreacion
+                                categoriaNoticia = it.categoriaNoticia
+                            }
+                        },
                         modifier = Modifier.weight(1f),
                         colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
                     ) {

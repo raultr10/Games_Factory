@@ -25,18 +25,16 @@ import edu.raultirado.games_factory_crud_kotlin.ui.viewmodel.EmpleadosViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AñadirEmpleadoScreen(navController: NavController, viewModel: EmpleadosViewModel = viewModel()) {
-    // ESTADOS PARA LOS CAMPOS
-    var dni by rememberSaveable { mutableStateOf("") } // NUEVO: ID_emp
+    var dni by rememberSaveable { mutableStateOf("") }
     var nombre by rememberSaveable { mutableStateOf("") }
     var apellidos by rememberSaveable { mutableStateOf("") }
     var correo by rememberSaveable { mutableStateOf("") }
-    var contrasena by rememberSaveable { mutableStateOf("") } // NUEVO: Contraseña
+    var contrasena by rememberSaveable { mutableStateOf("") }
     var direccion by rememberSaveable { mutableStateOf("") }
     var fechaNaci by rememberSaveable { mutableStateOf("") }
     var telefono by rememberSaveable { mutableStateOf("") }
     var codigoPostal by rememberSaveable { mutableStateOf("") }
 
-    // NUEVO: Categoría del empleado
     var categoria by rememberSaveable { mutableStateOf("Empleado_Normal") }
     val opcionesCategoria = listOf("Empleado_Admin", "Empleado_Normal")
     var mensajeError by rememberSaveable { mutableStateOf("") }
@@ -44,14 +42,16 @@ fun AñadirEmpleadoScreen(navController: NavController, viewModel: EmpleadosView
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Nuevo Empleado") },
+                title = { Text("Nuevo Empleado", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White
                 )
             )
         }
@@ -65,127 +65,90 @@ fun AñadirEmpleadoScreen(navController: NavController, viewModel: EmpleadosView
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // --- NUEVO: Fila para DNI y Categoría ---
-            Row(
+
+            // --- SECCIÓN 1: DATOS PERSONALES ---
+            ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
-                FormTextField(
-                    value = dni,
-                    onValueChange = { dni = it },
-                    label = "DNI / ID:",
-                    modifier = Modifier.weight(1f)
-                )
-                Box(modifier = Modifier.weight(1f)) {
-                    FormDropdownField(
-                        selectedItem = categoria,
-                        onItemSelected = { categoria = it },
-                        label = "Rol:",
-                        options = opcionesCategoria
-                    )
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("Datos Personales", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+
+                    FormTextField(value = dni, onValueChange = { dni = it }, label = "DNI / ID:")
+                    FormTextField(value = nombre, onValueChange = { nombre = it }, label = "Nombre:")
+                    FormTextField(value = apellidos, onValueChange = { apellidos = it }, label = "Apellidos:")
+                    FormDatePickerField(selectedDate = fechaNaci, onDateSelected = { fechaNaci = it }, label = "Fecha de Nacimiento:")
                 }
             }
 
-            FormTextField(value = nombre, onValueChange = { nombre = it }, label = "Nombre:")
-            FormTextField(
-                value = apellidos,
-                onValueChange = { apellidos = it },
-                label = "Apellidos:"
-            )
-
-            // --- NUEVO: Fila para Correo y Contraseña ---
-            Row(
+            // --- SECCIÓN 2: CONTACTO ---
+            ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
-                FormTextField(
-                    value = correo,
-                    onValueChange = { correo = it },
-                    label = "Correo:",
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    modifier = Modifier.weight(1f)
-                )
-                FormTextField(
-                    value = contrasena,
-                    onValueChange = { contrasena = it },
-                    label = "Contraseña:",
-                    modifier = Modifier.weight(1f)
-                )
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("Información de Contacto", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+
+                    FormTextField(value = direccion, onValueChange = { direccion = it }, label = "Dirección:")
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        FormTextField(
+                            value = telefono, onValueChange = { if (it.all { char -> char.isDigit() }) telefono = it },
+                            label = "Teléfono:", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone), modifier = Modifier.weight(1f)
+                        )
+                        FormTextField(
+                            value = codigoPostal, onValueChange = { if (it.all { char -> char.isDigit() }) codigoPostal = it },
+                            label = "C.P.:", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
             }
 
-            FormTextField(
-                value = direccion,
-                onValueChange = { direccion = it },
-                label = "Dirección:"
-            )
-
-            FormDatePickerField(
-                selectedDate = fechaNaci,
-                onDateSelected = { fechaNaci = it },
-                label = "Fecha de Nacimiento:"
-            )
-
-            Row(
+            // --- SECCIÓN 3: ACCESO Y ROL ---
+            ElevatedCard(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
-                FormTextField(
-                    value = telefono,
-                    onValueChange = { if (it.all { char -> char.isDigit() }) telefono = it },
-                    label = "Teléfono:",
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    modifier = Modifier.weight(1f)
-                )
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("Cuenta y Permisos", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
 
-                FormTextField(
-                    value = codigoPostal,
-                    onValueChange = { if (it.all { char -> char.isDigit() }) codigoPostal = it },
-                    label = "C.P.:",
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.weight(1f)
-                )
+                    FormTextField(
+                        value = correo, onValueChange = { correo = it }, label = "Correo Electrónico:",
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                    )
+                    FormTextField(value = contrasena, onValueChange = { contrasena = it }, label = "Contraseña:")
+                    FormDropdownField(selectedItem = categoria, onItemSelected = { categoria = it }, label = "Rol del Sistema:", options = opcionesCategoria)
+                }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             if (mensajeError.isNotEmpty()) {
-                Text(text = mensajeError, color = Color.Red, fontWeight = FontWeight.Bold)
+                Text(text = mensajeError, color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 8.dp))
             }
 
-            // BOTONES
+            // --- BOTONES ---
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                OutlinedButton(
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier.weight(1f).height(50.dp)
+                ) {
+                    Text("Cancelar", fontWeight = FontWeight.Bold)
+                }
                 Button(
                     onClick = {
-                        // LLAMAMOS AL VIEWMODEL AL PULSAR
                         viewModel.registrarNuevoEmpleado(
-                            dni,
-                            nombre,
-                            apellidos,
-                            correo,
-                            contrasena,
-                            direccion,
-                            fechaNaci,
-                            telefono,
-                            codigoPostal,
-                            categoria,
-                            onSuccess = {
-                                // Si va bien, volvemos a la lista
-                                navController.popBackStack()
-                            },
-                            onError = { error ->
-                                // Si va mal, mostramos el texto rojo
-                                mensajeError = error
-                            }
+                            dni, nombre, apellidos, correo, contrasena, direccion, fechaNaci, telefono, codigoPostal, categoria,
+                            onSuccess = { navController.popBackStack() },
+                            onError = { error -> mensajeError = error }
                         )
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f).height(50.dp)
                 ) {
                     Text("Registrar", fontWeight = FontWeight.Bold)
                 }
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

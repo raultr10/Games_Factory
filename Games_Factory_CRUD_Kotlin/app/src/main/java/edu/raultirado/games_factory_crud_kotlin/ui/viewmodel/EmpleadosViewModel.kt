@@ -81,4 +81,26 @@ class EmpleadosViewModel(application: Application) : AndroidViewModel(applicatio
             }
         }
     }
+    fun actualizarEmpleadoExistente(
+        idEmp: String, nombre: String, apellidos: String, correo: String,
+        direccion: String, fechaNaci: String, telefono: String, cp: String, rol: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val exito = repository.actualizarEmpleado(idEmp, nombre, apellidos, correo, direccion, fechaNaci, telefono, cp, rol)
+                withContext(Dispatchers.Main) {
+                    if (exito) {
+                        fetchEmpleados() // Recargar lista
+                        onSuccess()
+                    } else {
+                        onError("Error al actualizar empleado")
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) { onError("Error: ${e.message}") }
+            }
+        }
+    }
 }

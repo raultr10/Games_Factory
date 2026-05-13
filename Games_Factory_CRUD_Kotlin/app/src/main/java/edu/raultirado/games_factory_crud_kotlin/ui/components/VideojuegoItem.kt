@@ -41,7 +41,7 @@ fun VideojuegoItem(juego: Videojuego, onClick: () -> Unit) {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val rutaImagen = "http://192.168.68.120:8085/${juego.imagen}"
+            val rutaImagen = "http://192.168.68.125:8085/${juego.imagen}"
 
             AsyncImage(
                 model = rutaImagen,

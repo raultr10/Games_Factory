@@ -249,4 +249,255 @@ class RemoteDatasource {
         }
         return exito
     }
+    fun registrarVideojuego(
+        idProducto: String, // NUEVO: Recibimos el ID
+        nombre: String, descripcion: String, precio: Double, anyo: Int,
+        categoria: String, consola: String, idioma: String, compania: String,
+        nombreImagen: String
+    ): Boolean {
+        var exito = false
+        val connection = DbConnection.getConnection()
+
+        try {
+            if (connection != null) {
+                connection.autoCommit = false // Empezamos la transacción
+
+                // 1. INSERTAR EN LA TABLA PRODUCTO
+                val queryProducto = """
+                    INSERT INTO Producto (ID_producto, nombre_prod, descripcion, precio, anyo, imagen) 
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """.trimIndent()
+
+                val stmtProd = connection.prepareStatement(queryProducto)
+                stmtProd.setString(1, idProducto)
+                stmtProd.setString(2, nombre)
+                stmtProd.setString(3, descripcion)
+                stmtProd.setDouble(4, precio)
+                stmtProd.setInt(5, anyo)
+                stmtProd.setString(6, nombreImagen) // Guardamos "nombre-juego.jpg"
+
+                stmtProd.executeUpdate()
+                stmtProd.close()
+
+                // 2. INSERTAR EN LA TABLA VIDEOJUEGO
+                val queryVideojuego = """
+                    INSERT INTO Videojuego (ID_producto, categoria_videojuego, tipo_consola, idioma, compania) 
+                    VALUES (?, ?, ?, ?, ?)
+                """.trimIndent()
+                val stmtVid = connection.prepareStatement(queryVideojuego)
+                stmtVid.setString(1, idProducto)
+                stmtVid.setString(2, categoria)
+                stmtVid.setString(3, consola)
+                stmtVid.setString(4, idioma)
+                stmtVid.setString(5, compania)
+
+                stmtVid.executeUpdate()
+                stmtVid.close()
+
+                // Todo ha ido bien, confirmamos cambios
+                connection.commit()
+                exito = true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // Si falla, deshacemos para no dejar datos huérfanos
+            try { connection?.rollback() } catch (ex: Exception) {}
+        } finally {
+            try {
+                connection?.autoCommit = true
+                connection?.close()
+            } catch (e: Exception) {}
+        }
+        return exito
+    }
+    fun actualizarVideojuego(
+        idProducto: String, nombre: String, descripcion: String, precio: Double, anyo: Int,
+        categoria: String, consola: String, idioma: String, compania: String
+    ): Boolean {
+        var exito = false
+        val connection = DbConnection.getConnection()
+
+        try {
+            if (connection != null) {
+                connection.autoCommit = false
+
+                // 1. ACTUALIZAR TABLA PRODUCTO
+                val queryProducto = """
+                    UPDATE Producto 
+                    SET nombre_prod = ?, descripcion = ?, precio = ?, anyo = ?
+                    WHERE ID_producto = ?
+                """.trimIndent()
+
+                val stmtProd = connection.prepareStatement(queryProducto)
+                stmtProd.setString(1, nombre)
+                stmtProd.setString(2, descripcion)
+                stmtProd.setDouble(3, precio)
+                stmtProd.setInt(4, anyo)
+                stmtProd.setString(5, idProducto)
+                stmtProd.executeUpdate()
+                stmtProd.close()
+
+                // 2. ACTUALIZAR TABLA VIDEOJUEGO
+                val queryVideojuego = """
+                    UPDATE Videojuego 
+                    SET categoria_videojuego = ?, tipo_consola = ?, idioma = ?, compania = ?
+                    WHERE ID_producto = ?
+                """.trimIndent()
+                val stmtVid = connection.prepareStatement(queryVideojuego)
+                stmtVid.setString(1, categoria)
+                stmtVid.setString(2, consola)
+                stmtVid.setString(3, idioma)
+                stmtVid.setString(4, compania)
+                stmtVid.setString(5, idProducto)
+                stmtVid.executeUpdate()
+                stmtVid.close()
+
+                connection.commit()
+                exito = true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            try { connection?.rollback() } catch (ex: Exception) {}
+        } finally {
+            try {
+                connection?.autoCommit = true
+                connection?.close()
+            } catch (e: Exception) {}
+        }
+        return exito
+    }
+    fun registrarNoticia(
+        idNoticia: String, titulo: String, descripcion: String, historia: String,
+        fechaCreacion: String, categoria: String, nombreImagen: String
+    ): Boolean {
+        var exito = false
+        val connection = DbConnection.getConnection()
+        try {
+            if (connection != null) {
+                val query = """
+                    INSERT INTO Noticia (ID_noticia, titulo, descripcion, historia, fecha_creacion, categoria_noticia, imagen) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """.trimIndent()
+                val stmt = connection.prepareStatement(query)
+                stmt.setString(1, idNoticia)
+                stmt.setString(2, titulo)
+                stmt.setString(3, descripcion)
+                stmt.setString(4, historia)
+
+                // Arreglamos la fecha si viene en formato DD/MM/YYYY
+                val fechaArreglada = if (fechaCreacion.contains("/")) {
+                    val trozos = fechaCreacion.split("/")
+                    "${trozos[2]}-${trozos[1]}-${trozos[0]}"
+                } else fechaCreacion
+
+                stmt.setString(5, fechaArreglada)
+                stmt.setString(6, categoria)
+                stmt.setString(7, nombreImagen)
+
+                stmt.executeUpdate()
+                stmt.close()
+                exito = true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            connection?.close()
+        }
+        return exito
+    }
+
+    fun actualizarNoticia(
+        idNoticia: String, titulo: String, descripcion: String, historia: String,
+        fechaCreacion: String, categoria: String
+    ): Boolean {
+        var exito = false
+        val connection = DbConnection.getConnection()
+        try {
+            if (connection != null) {
+                val query = """
+                    UPDATE Noticia 
+                    SET titulo = ?, descripcion = ?, historia = ?, fecha_creacion = ?, categoria_noticia = ?
+                    WHERE ID_noticia = ?
+                """.trimIndent()
+                val stmt = connection.prepareStatement(query)
+                stmt.setString(1, titulo)
+                stmt.setString(2, descripcion)
+                stmt.setString(3, historia)
+
+                val fechaArreglada = if (fechaCreacion.contains("/")) {
+                    val trozos = fechaCreacion.split("/")
+                    "${trozos[2]}-${trozos[1]}-${trozos[0]}"
+                } else fechaCreacion
+
+                stmt.setString(4, fechaArreglada)
+                stmt.setString(5, categoria)
+                stmt.setString(6, idNoticia)
+
+                stmt.executeUpdate()
+                stmt.close()
+                exito = true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            connection?.close()
+        }
+        return exito
+    }
+    fun actualizarEmpleado(
+        idEmp: String, nombre: String, apellidos: String, correo: String,
+        direccion: String, fechaNaci: String, telefono: String, cp: String, rol: String
+    ): Boolean {
+        var exito = false
+        val connection = DbConnection.getConnection()
+        try {
+            if (connection != null) {
+                connection.autoCommit = false
+
+                // 1. Actualizar datos en la tabla Empleado
+                val queryEmp = """
+                    UPDATE Empleado 
+                    SET nombre_emp = ?, apellidos_emp = ?, correo_emp = ?, 
+                        direccion = ?, fecha_naci = ?, telefono = ?, codigo_postal = ?
+                    WHERE ID_emp = ?
+                """.trimIndent()
+
+                val stmtEmp = connection.prepareStatement(queryEmp)
+                stmtEmp.setString(1, nombre)
+                stmtEmp.setString(2, apellidos)
+                stmtEmp.setString(3, correo)
+                stmtEmp.setString(4, direccion)
+
+                // Arreglo de fecha para SQL Server
+                val fechaArreglada = if (fechaNaci.contains("/")) {
+                    val trozos = fechaNaci.split("/")
+                    "${trozos[2]}-${trozos[1]}-${trozos[0]}"
+                } else fechaNaci
+                stmtEmp.setString(5, fechaArreglada)
+
+                stmtEmp.setString(6, telefono)
+                stmtEmp.setString(7, cp)
+                stmtEmp.setString(8, idEmp)
+                stmtEmp.executeUpdate()
+                stmtEmp.close()
+
+                // 2. Actualizar el rol en categoria_empleado
+                val queryCat = "UPDATE categoria_empleado SET tipo_empleado = ? WHERE ID_emp = ?"
+                val stmtCat = connection.prepareStatement(queryCat)
+                stmtCat.setString(1, rol)
+                stmtCat.setString(2, idEmp)
+                stmtCat.executeUpdate()
+                stmtCat.close()
+
+                connection.commit()
+                exito = true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            try { connection?.rollback() } catch (ex: Exception) {}
+        } finally {
+            connection?.close()
+        }
+        return exito
+    }
 }
