@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import edu.raultirado.games_factory_crud_kotlin.config.AppConfig
 import edu.raultirado.games_factory_crud_kotlin.data.model.Videojuego
 
 @Composable
@@ -41,7 +42,7 @@ fun VideojuegoItem(juego: Videojuego, onClick: () -> Unit) {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val rutaImagen = "http://192.168.68.125:8085/${juego.imagen}"
+            val rutaImagen = "${AppConfig.URL_IMAGENES}/${juego.imagen}"
 
             AsyncImage(
                 model = rutaImagen,

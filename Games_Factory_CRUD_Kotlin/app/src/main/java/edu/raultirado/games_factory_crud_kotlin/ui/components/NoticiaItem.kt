@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import edu.raultirado.games_factory_crud_kotlin.config.AppConfig
 import edu.raultirado.games_factory_crud_kotlin.data.model.Noticia
 
 @Composable
@@ -27,7 +28,7 @@ fun NoticiaItem(noticia: Noticia, onClick: () -> Unit) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            val rutaImagen = "http://192.168.68.125:8085/${noticia.imagen}"
+            val rutaImagen = "${AppConfig.URL_IMAGENES}/${noticia.imagen}"
 
             AsyncImage(
                 model = rutaImagen,

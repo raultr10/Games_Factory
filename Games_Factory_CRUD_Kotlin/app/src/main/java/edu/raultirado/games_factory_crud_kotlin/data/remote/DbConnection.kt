@@ -1,10 +1,11 @@
 package edu.raultirado.games_factory_crud_kotlin.data.remote
 
+import edu.raultirado.games_factory_crud_kotlin.config.AppConfig
 import java.sql.Connection
 import java.sql.DriverManager
 
 object DbConnection {
-    private const val URL = "jdbc:jtds:sqlserver://192.168.68.125:1433;databaseName=Games_Factory;ssl=request=false"
+    private const val URL = AppConfig.URL_BASE_DATOS
     private const val USER = "sa"
     private const val PASS = "Password123!"
 

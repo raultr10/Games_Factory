@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import edu.raultirado.games_factory_crud_kotlin.config.AppConfig
 import edu.raultirado.games_factory_crud_kotlin.ui.components.FormDatePickerField
 import edu.raultirado.games_factory_crud_kotlin.ui.components.FormDropdownField
 import edu.raultirado.games_factory_crud_kotlin.ui.components.FormTextField
@@ -93,7 +94,7 @@ fun EditarNoticiaScreen(
             ) {
                 if (noticiaReal != null && noticiaReal.imagen.isNotEmpty()) {
                     val rutaLimpia = noticiaReal.imagen.removePrefix("/")
-                    val urlFinal = "http://192.168.68.125:8085/$rutaLimpia"
+                    val urlFinal = "${AppConfig.URL_IMAGENES}/$rutaLimpia"
 
                     AsyncImage(
                         model = urlFinal,
