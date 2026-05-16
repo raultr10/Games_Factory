@@ -1,5 +1,6 @@
 package edu.raultirado.games_factory_crud_kotlin.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -12,19 +13,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import edu.raultirado.games_factory_crud_kotlin.config.AppConfig
 import edu.raultirado.games_factory_crud_kotlin.data.model.Noticia
 
 @Composable
-fun NoticiaItem(noticia: Noticia) {
+fun NoticiaItem(noticia: Noticia, onClick: () -> Unit) {
     Card(
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() } // Hacemos que la tarjeta sea pulsable
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            val rutaImagen = "http://10.0.2.2:8085/${noticia.imagen}"
+            val rutaImagen = "${AppConfig.URL_IMAGENES}/${noticia.imagen}"
 
             AsyncImage(
                 model = rutaImagen,

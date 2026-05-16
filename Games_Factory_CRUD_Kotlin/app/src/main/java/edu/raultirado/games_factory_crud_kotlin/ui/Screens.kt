@@ -6,4 +6,11 @@ sealed class Screens(val route: String) {
     object VideojuegosScreen : Screens("videojuegos_list")
     object NoticiasScreen : Screens("noticias_list")
     object EmpleadosScreen : Screens("empleados_list")
+    object AñadirVideojuegoScreen : Screens("añadir_videojuego_screen")
+    object AñadirNoticiaScreen : Screens("añadir_noticia_screen")
+    object AñadirEmpleadosScreen : Screens("añadir_empleado_screen")
+    object EditarVideojuegoScreen : Screens("editar_videojuego_screen")
+    object EditarNoticiaScreen : Screens("editar_noticia_screen")
+    object EditarEmpleadoScreen : Screens("editar_empleado_screen")
+
 }

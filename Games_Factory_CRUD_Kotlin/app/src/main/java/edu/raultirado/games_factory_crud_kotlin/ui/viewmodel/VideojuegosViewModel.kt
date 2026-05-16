@@ -3,15 +3,15 @@ package edu.raultirado.games_factory_crud_kotlin.ui.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import edu.raultirado.games_factory_crud_kotlin.data.local.GamesFactoryDatabase
-import edu.raultirado.games_factory_crud_kotlin.data.local.LocalDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.model.Videojuego
 import edu.raultirado.games_factory_crud_kotlin.data.remote.RemoteDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.repository.Repository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class VideojuegosViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -30,13 +30,9 @@ class VideojuegosViewModel(application: Application) : AndroidViewModel(applicat
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     init {
-        val database = GamesFactoryDatabase.getInstance(application)
-
-        val localDatasource = LocalDatasource(usuarioDao = database.usuarioDao())
-
         val remoteDataSource = RemoteDatasource()
 
-        repository = Repository(localDatasource, remoteDataSource)
+        repository = Repository(remoteDataSource)
 
         fetchVideojuegos()
     }
@@ -54,6 +50,78 @@ class VideojuegosViewModel(application: Application) : AndroidViewModel(applicat
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false
+            }
+        }
+    }
+    fun registrarNuevoVideojuego(
+        idProducto: String, nombre: String, descripcion: String, precioStr: String, anyoStr: String,
+        categoria: String, consola: String, idioma: String, compania: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        // Validamos que el ID también esté relleno
+        if (idProducto.isBlank() || nombre.isBlank() || precioStr.isBlank() || anyoStr.isBlank()) {
+            onError("ID, Nombre, precio y año son obligatorios")
+            return
+        }
+
+        // GENERADOR DEL NOMBRE DE LA IMAGEN (ej: "Super Mario" -> "super-mario.jpg")
+        val nombreImagen = nombre.lowercase().replace(" ", "-") + ".jpg"
+
+        val precioSeguro = precioStr.replace(",", ".").toDoubleOrNull() ?: 0.0
+        val anyoSeguro = anyoStr.toIntOrNull() ?: 2026
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val exito = repository.registrarVideojuego(
+                    idProducto, nombre, descripcion, precioSeguro, anyoSeguro, categoria, consola, idioma, compania, nombreImagen
+                )
+                withContext(Dispatchers.Main) {
+                    if (exito) {
+                        fetchVideojuegos()
+                        onSuccess()
+                    } else {
+                        onError("Error al guardar. ¿El ID_producto ya existe o el formato es incorrecto?")
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    onError("Error de conexión: ${e.message}")
+                }
+            }
+        }
+    }
+    fun actualizarVideojuegoExistente(
+        idProducto: String, nombre: String, descripcion: String, precioStr: String, anyoStr: String,
+        categoria: String, consola: String, idioma: String, compania: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        if (nombre.isBlank() || precioStr.isBlank() || anyoStr.isBlank()) {
+            onError("Nombre, precio y año son obligatorios")
+            return
+        }
+
+        val precioSeguro = precioStr.replace(",", ".").toDoubleOrNull() ?: 0.0
+        val anyoSeguro = anyoStr.toIntOrNull() ?: 2026
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val exito = repository.actualizarVideojuego(
+                    idProducto, nombre, descripcion, precioSeguro, anyoSeguro, categoria, consola, idioma, compania
+                )
+                withContext(Dispatchers.Main) {
+                    if (exito) {
+                        fetchVideojuegos() // Recargamos la lista con los nuevos datos
+                        onSuccess()
+                    } else {
+                        onError("Error al actualizar la base de datos.")
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    onError("Error de conexión: ${e.message}")
+                }
             }
         }
     }

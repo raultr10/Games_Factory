@@ -1,70 +1,51 @@
 package edu.raultirado.games_factory_crud_kotlin.ui.viewmodel
 
-import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import edu.raultirado.games_factory_crud_kotlin.data.local.GamesFactoryDatabase
-import edu.raultirado.games_factory_crud_kotlin.data.local.LocalDatasource
-import edu.raultirado.games_factory_crud_kotlin.data.model.Usuario
 import edu.raultirado.games_factory_crud_kotlin.data.remote.RemoteDatasource
 import edu.raultirado.games_factory_crud_kotlin.data.repository.Repository
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class LoginViewModel(application: Application) : AndroidViewModel(application) {
-    private val repository: Repository
-    private val localDatasource: LocalDatasource
-    private val remoteDatasource: RemoteDatasource
-
-    // Estado para el error de login (como hacías con los estados en tus otros ViewModels)
+class LoginViewModel : ViewModel() {
     var loginError by mutableStateOf("")
+        private set
 
-    init {
-        // Inicialización idéntica a tus archivos de CarDetails/CarsViewModel
-        val database = GamesFactoryDatabase.getInstance(application)
-        localDatasource = LocalDatasource(database.usuarioDao())
-        remoteDatasource = RemoteDatasource()
-        repository = Repository(localDatasource, remoteDatasource)
+    private val repository = Repository(RemoteDatasource())
 
-        seedDatabase()
-    }
-
-    private fun seedDatabase() {
-        viewModelScope.launch {
-            // Usamos tus atributos exactos: nombreUsu, apellidosUsu, etc.
-            val adminUser = Usuario(
-                idDni = "admin",
-                nombreUsu = "Admin",
-                apellidosUsu = "Games Factory",
-                direccion = "Calle Falsa 123",
-                fechaNaci = "1990-01-01", // Fecha actual
-                telefono = "600000000",
-                codigoPostal = "03001",
-                correoUsu = "admin@factory.com",
-                contrasenaUsu = "1234", // Esta es la que usarás para loguearte
-            )
-
-            try {
-                repository.insertUsuario(adminUser)
-            } catch (e: Exception) {
-                // Si el usuario ya existe (ABORT), no hacemos nada
-            }
+    // Fíjate que ahora onLoginSuccess recibe un String (el Rol)
+    fun login(email: String, pass: String, onLoginSuccess: (String) -> Unit) {
+        if (email.isBlank() || pass.isBlank()) {
+            loginError = "Por favor, rellena todos los campos"
+            return
         }
-    }
-    fun login(dni: String, pass: String, onSuccess: () -> Unit) {
-        viewModelScope.launch {
-            // Obtenemos la lista de usuarios del repositorio
-            val users = repository.allUsuarios.first()
-            val userFound = users.find { it.idDni == dni && it.contrasenaUsu == pass }
 
-            if (userFound != null) {
-                loginError = ""
-                onSuccess()
-            } else {
-                loginError = "DNI o contraseña incorrectos"
+        loginError = "" // Limpiamos errores previos
+
+        // Hacemos la llamada a la base de datos en un hilo secundario (IO)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                // Llamamos a la función que acabamos de crear
+                val rol = repository.loginEmpleado(email, pass)
+
+                withContext(Dispatchers.Main) {
+                    if (rol != null) {
+                        // ¡Login correcto! Pasamos el rol a la pantalla principal
+                        onLoginSuccess(rol)
+                    } else {
+                        // Credenciales incorrectas
+                        loginError = "Correo o contraseña incorrectos"
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    loginError = "Error de conexión con el servidor"
+                    e.printStackTrace()
+                }
             }
         }
     }

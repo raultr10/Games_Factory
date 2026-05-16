@@ -1,10 +1,12 @@
 package edu.raultirado.games_factory_crud_kotlin.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -14,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import edu.raultirado.games_factory_crud_kotlin.ui.Screens
 import edu.raultirado.games_factory_crud_kotlin.ui.components.EmpleadoItem
 import edu.raultirado.games_factory_crud_kotlin.ui.viewmodel.EmpleadosViewModel
 
@@ -40,6 +43,15 @@ fun EmpleadosScreen(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate(Screens.AñadirEmpleadosScreen.route) },
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Añadir Empleado")
+            }
         }
     ) { paddingValues ->
         Box(
@@ -57,7 +69,18 @@ fun EmpleadosScreen(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         items(listaEmpleados) { empleado ->
-                            EmpleadoItem(empleado)
+                            // --- LA MAGIA ESTÁ AQUÍ ---
+                            // Envolvemos el item en un Box para que detecte el clic en toda la tarjeta
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        // Navegamos pasando el ID del empleado seleccionado
+                                        navController.navigate("${Screens.EditarEmpleadoScreen.route}/${empleado.idEmp}")
+                                    }
+                            ) {
+                                EmpleadoItem(empleado)
+                            }
                         }
                     }
                 }

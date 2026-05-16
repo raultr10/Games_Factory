@@ -1,0 +1,26 @@
+services:
+  # Base de Datos SQL Server.
+  basedatos:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql_server_games
+    user: root
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Password123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql/data
+
+  # Servidor Web (Nginx).
+  imagenes:
+    image: nginx:alpine
+    container_name: servidor_imagenes
+    ports:
+      - "8080:80"
+    volumes:
+      - ./foto_CRUD:/usr/share/nginx/html
+    restart: always
+
+volumes:
+  sql_data:

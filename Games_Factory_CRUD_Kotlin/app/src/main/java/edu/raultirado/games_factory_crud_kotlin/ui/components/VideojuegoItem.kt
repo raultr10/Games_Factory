@@ -1,5 +1,6 @@
 package edu.raultirado.games_factory_crud_kotlin.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,13 +24,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import edu.raultirado.games_factory_crud_kotlin.config.AppConfig
 import edu.raultirado.games_factory_crud_kotlin.data.model.Videojuego
 
 @Composable
-fun VideojuegoItem(juego: Videojuego) {
+fun VideojuegoItem(juego: Videojuego, onClick: () -> Unit) {
     Card(
         elevation = CardDefaults.cardElevation(4.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier
@@ -37,7 +42,7 @@ fun VideojuegoItem(juego: Videojuego) {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val rutaImagen = "http://10.0.2.2:8085/${juego.imagen}"
+            val rutaImagen = "${AppConfig.URL_IMAGENES}/${juego.imagen}"
 
             AsyncImage(
                 model = rutaImagen,
