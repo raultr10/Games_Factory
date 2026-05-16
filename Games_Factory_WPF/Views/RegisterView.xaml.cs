@@ -24,5 +24,30 @@ namespace Games_Factory.Views
         {
             InitializeComponent();
         }
+
+        // Sirve para alternar entre mostrar y ocultar la contraseña de el Registro.
+        private void btnShowRegPass_Click(object sender, RoutedEventArgs e)
+        {
+            if (btnShowRegPass.IsChecked == true)
+            {
+                // Modo contraseña visible.
+                txtRegPassVisible.Text = txtRegPass.Password;
+                txtRegPass.Visibility = Visibility.Collapsed;
+                txtRegPassVisible.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                // Modo contraseña oculta.
+                txtRegPass.Password = txtRegPassVisible.Text;
+                txtRegPassVisible.Visibility = Visibility.Collapsed;
+                txtRegPass.Visibility = Visibility.Visible;
+            }
+        }
+
+        // Sincroniza lo que el usuario escribe mientras el ojo está activado.
+        private void txtRegPassVisible_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            txtRegPass.Password = txtRegPassVisible.Text;
+        }
     }
 }

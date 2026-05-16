@@ -23,6 +23,7 @@ namespace Games_Factory.ViewModels
         private bool _isCatNintendo;
         private bool _isCatXbox;
         private bool _isCatPC;
+        private bool _isWideLayout = true;
 
         public bool IsCatPlaystation { get => _isCatPlaystation; set => SetProperty(ref _isCatPlaystation, value); }
         public bool IsCatNintendo { get => _isCatNintendo; set => SetProperty(ref _isCatNintendo, value); }
@@ -42,6 +43,13 @@ namespace Games_Factory.ViewModels
             get => _isFiltersOpen;
             set => SetProperty(ref _isFiltersOpen, value);
         }
+
+        public bool IsWideLayout
+        {
+            get => _isWideLayout;
+            set { _isWideLayout = value; OnPropertyChanged(nameof(IsWideLayout)); }
+        }
+
         public ObservableCollection<Noticia> NewsList { get => _newsList; set => SetProperty(ref _newsList, value); }
         public Noticia SelectedNews { get => _selectedNews; set => SetProperty(ref _selectedNews, value); }
 

@@ -4,49 +4,170 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="1000">
-    <Grid Background="#F0F0F0" Margin="20">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+             d:DesignHeight="600" d:DesignWidth="1000"
+             Background="#F0F2F5"
+             UseLayoutRounding="True" 
+             SnapsToDevicePixels="True"
+             SizeChanged="UserControl_SizeChanged">
 
-        <Button Grid.Column="0" Margin="10" Command="{Binding GoToGamesCommand}" Cursor="Hand">
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="10" Background="Black" ClipToBounds="True">
-                        <Grid>
-                            <Image Source="/Assets/Videojuegos.jpg" Stretch="UniformToFill" Opacity="0.7"/>
 
-                            <TextBlock Text="VIDEOJUEGOS" Foreground="White" FontSize="36" FontWeight="Black" 
-                                       HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock.Effect>
-                                    <DropShadowEffect BlurRadius="5" Opacity="0.8"/>
-                                </TextBlock.Effect>
-                            </TextBlock>
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+    <ScrollViewer x:Name="mainScroll" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
 
-        <Button Grid.Column="1" Margin="10" Command="{Binding GoToNewsCommand}" Cursor="Hand">
-            <Button.Template>
-                <ControlTemplate>
-                    <Border CornerRadius="10" Background="Black" ClipToBounds="True">
-                        <Grid>
-                            <Image Source="/Assets/Noticia.jpg" Stretch="UniformToFill" Opacity="0.7"/>
+        <Grid Margin="15">
 
-                            <TextBlock Text="NOTICIAS" Foreground="White" FontSize="36" FontWeight="Black" 
-                                       HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock.Effect>
-                                    <DropShadowEffect BlurRadius="5" Opacity="0.8"/>
-                                </TextBlock.Effect>
-                            </TextBlock>
-                        </Grid>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-    </Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="Col0" Width="*"/>
+                <ColumnDefinition x:Name="Col1" Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="Row0" Height="*"/>
+                <RowDefinition x:Name="Row1" Height="0"/>
+            </Grid.RowDefinitions>
+
+            <Button x:Name="btnGames" Grid.Column="0" Grid.Row="0" Margin="15" MinHeight="350" Command="{Binding GoToGamesCommand}" Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="15" Background="Black">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="20" Opacity="0.15" ShadowDepth="5" Color="#000" RenderingBias="Performance"/>
+                            </Border.Effect>
+
+                            <Grid>
+                                <Border CornerRadius="15">
+                                    <Border.Background>
+                                        <ImageBrush x:Name="bgImage" ImageSource="pack://application:,,,/Assets/Fondo_videojuegos.jpeg" Stretch="UniformToFill" Opacity="0.6">
+                                            <ImageBrush.RelativeTransform>
+                                                <ScaleTransform x:Name="imgScale" ScaleX="1" ScaleY="1" CenterX="0.5" CenterY="0.5"/>
+                                            </ImageBrush.RelativeTransform>
+                                        </ImageBrush>
+                                    </Border.Background>
+                                </Border>
+
+                                <Border x:Name="redOverlay" CornerRadius="15" Background="#D32F2F" Opacity="0.1"/>
+
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <TextBlock Text="VIDEOJUEGOS" Foreground="White" FontSize="42" FontWeight="Black" HorizontalAlignment="Center">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect BlurRadius="10" Opacity="0.8" ShadowDepth="2" Direction="315"/>
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                    <TextBlock x:Name="subText" Text="Explora el catálogo" Foreground="White" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center" Opacity="0.8" Margin="0,5,0,0">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect BlurRadius="5" Opacity="0.8" ShadowDepth="1"/>
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="bgImage" Storyboard.TargetProperty="Opacity" To="0.85" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetName="imgScale" Storyboard.TargetProperty="ScaleX" To="1.08" Duration="0:0:0.4">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="imgScale" Storyboard.TargetProperty="ScaleY" To="1.08" Duration="0:0:0.4">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="redOverlay" Storyboard.TargetProperty="Opacity" To="0.3" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="bgImage" Storyboard.TargetProperty="Opacity" To="0.6" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetName="imgScale" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.4"/>
+                                            <DoubleAnimation Storyboard.TargetName="imgScale" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.4"/>
+                                            <DoubleAnimation Storyboard.TargetName="redOverlay" Storyboard.TargetProperty="Opacity" To="0.1" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <Button x:Name="btnNews" Grid.Column="1" Grid.Row="0" Margin="15" MinHeight="350" Command="{Binding GoToNewsCommand}" Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="15" Background="Black">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="20" Opacity="0.15" ShadowDepth="5" Color="#000" RenderingBias="Performance"/>
+                            </Border.Effect>
+
+                            <Grid>
+                                <Border CornerRadius="15">
+                                    <Border.Background>
+                                        <ImageBrush x:Name="bgImageNews" ImageSource="pack://application:,,,/Assets/fondo_noticias.jpeg" Stretch="UniformToFill" Opacity="0.6">
+                                            <ImageBrush.RelativeTransform>
+                                                <ScaleTransform x:Name="imgScaleNews" ScaleX="1" ScaleY="1" CenterX="0.5" CenterY="0.5"/>
+                                            </ImageBrush.RelativeTransform>
+                                        </ImageBrush>
+                                    </Border.Background>
+                                </Border>
+
+                                <Border x:Name="redOverlayNews" CornerRadius="15" Background="#D32F2F" Opacity="0.1"/>
+
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <TextBlock Text="NOTICIAS" Foreground="White" FontSize="42" FontWeight="Black" HorizontalAlignment="Center">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect BlurRadius="10" Opacity="0.8" ShadowDepth="2" Direction="315"/>
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                    <TextBlock x:Name="subTextNews" Text="Mantente informado" Foreground="White" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center" Opacity="0.8" Margin="0,5,0,0">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect BlurRadius="5" Opacity="0.8" ShadowDepth="1"/>
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="bgImageNews" Storyboard.TargetProperty="Opacity" To="0.85" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetName="imgScaleNews" Storyboard.TargetProperty="ScaleX" To="1.08" Duration="0:0:0.4">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="imgScaleNews" Storyboard.TargetProperty="ScaleY" To="1.08" Duration="0:0:0.4">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <QuadraticEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="redOverlayNews" Storyboard.TargetProperty="Opacity" To="0.3" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="bgImageNews" Storyboard.TargetProperty="Opacity" To="0.6" Duration="0:0:0.3"/>
+                                            <DoubleAnimation Storyboard.TargetName="imgScaleNews" Storyboard.TargetProperty="ScaleX" To="1" Duration="0:0:0.4"/>
+                                            <DoubleAnimation Storyboard.TargetName="imgScaleNews" Storyboard.TargetProperty="ScaleY" To="1" Duration="0:0:0.4"/>
+                                            <DoubleAnimation Storyboard.TargetName="redOverlayNews" Storyboard.TargetProperty="Opacity" To="0.1" Duration="0:0:0.3"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+        </Grid>
+    </ScrollViewer>
 </UserControl>

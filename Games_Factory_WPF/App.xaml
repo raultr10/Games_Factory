@@ -29,6 +29,9 @@
         <DataTemplate DataType="{x:Type vm:RegisterViewModel}">
             <v:RegisterView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:CartViewModel}">
+            <v:CartView />
+        </DataTemplate>
 
         <Style x:Key="BtnRojo" TargetType="Button">
             <Setter Property="Background" Value="#D32F2F"/>

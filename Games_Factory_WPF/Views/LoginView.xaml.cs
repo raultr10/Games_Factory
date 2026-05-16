@@ -24,5 +24,30 @@ namespace Games_Factory.Views
         {
             InitializeComponent();
         }
+
+        // Sirve para alternar entre mostrar y ocultar la contraseña.
+        private void btnShowPass_Click(object sender, RoutedEventArgs e)
+        {
+            if (btnShowPass.IsChecked == true)
+            {
+                // Modo contraseña visible.
+                txtPassVisible.Text = txtPass.Password;
+                txtPass.Visibility = Visibility.Collapsed;
+                txtPassVisible.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                // Modo contraseña oculta.
+                txtPass.Password = txtPassVisible.Text;
+                txtPassVisible.Visibility = Visibility.Collapsed;
+                txtPass.Visibility = Visibility.Visible;
+            }
+        }
+
+        // Sincroniza lo que el usuario escribe mientras el ojo está activado.
+        private void txtPassVisible_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            txtPass.Password = txtPassVisible.Text;
+        }
     }
 }

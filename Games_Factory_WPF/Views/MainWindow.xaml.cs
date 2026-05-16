@@ -23,5 +23,35 @@ namespace Games_Factory.Views
         {
             InitializeComponent();
         }
+
+        // Esta función detecta cuando la ventana cambia de tamaño.
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width < 950)
+            {
+                DesktopNav.Visibility = Visibility.Collapsed;
+                MobileNav.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                DesktopNav.Visibility = Visibility.Visible;
+                MobileNav.Visibility = Visibility.Collapsed;
+
+                // Cierra el menú desplegable cuando vuelvas a agrandar la pantalla.
+                if (btnHamburger != null)
+                {
+                    btnHamburger.IsChecked = false;
+                }
+            }
+        }
+
+        // Cierra el menú móvil automáticamente cuando el usuario haga click en una opción.
+        private void MobileMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (btnHamburger != null)
+            {
+                btnHamburger.IsChecked = false;
+            }
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Games_Factory.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,25 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-
 namespace Games_Factory.Views
 {
     /// <summary>
-    /// Lógica de interacción para NewsView.xaml
+    /// Lógica de interacción para CartView.xaml
     /// </summary>
-    public partial class NewsView : UserControl
+    public partial class CartView : UserControl
     {
-        public NewsView()
+        public CartView()
         {
             InitializeComponent();
-            ContentGrid.SizeChanged += (s, e) =>
-            {
-                if (DataContext is NewsViewModel vm)
-                {
-                    vm.IsWideLayout = e.NewSize.Width > 750;
-                }
-            };
         }
-        
     }
 }

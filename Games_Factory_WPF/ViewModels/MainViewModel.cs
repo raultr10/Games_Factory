@@ -1,4 +1,5 @@
-﻿using Games_Factory.ViewModels.Base;
+﻿using Games_Factory.Services;
+using Games_Factory.ViewModels.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,26 +46,31 @@ namespace Games_Factory.ViewModels
             set { SetProperty(ref _currentView, value); GlobalSearch = ""; }
         }
 
+        public CartService CartService { get; }
+
         public RelayCommand NavigateHomeCommand { get; }
         public RelayCommand NavigateGamesCommand { get; }
         public RelayCommand NavigateNewsCommand { get; }
         public RelayCommand NavigateLoginCommand { get; }
-
         public RelayCommand LogoutCommand { get; }
+        public RelayCommand NavigateCartCommand { get; }
 
         public MainViewModel()
         {
+            // Inicializamos el servicio del carrito.
+            CartService = new CartService();
+
             NavigateHomeCommand = new RelayCommand(o => CurrentView = new HomeViewModel(this));
             NavigateGamesCommand = new RelayCommand(o => CurrentView = new GamesViewModel(this));
             NavigateNewsCommand = new RelayCommand(o => CurrentView = new NewsViewModel());
             NavigateLoginCommand = new RelayCommand(o => CurrentView = new LoginViewModel(this));
+            NavigateCartCommand = new RelayCommand(o => CurrentView = new CartViewModel(this));
 
             // Cierro la sesión actual del usuario.
             LogoutCommand = new RelayCommand(o =>
             {
                 if (MessageBox.Show("¿Seguro que quieres cerrar sesión?", "Salir", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    // Elimino la referencia al usuario actual.
                     App.CurrentUser = null;
 
                     // Refresco el estado de la interfaz.
@@ -89,11 +95,17 @@ namespace Games_Factory.ViewModels
             {
                 IsUserLoggedIn = true;
                 UserName = App.CurrentUser.Nombre;
+
+                // Le pedimos al servicio que busque y desencripte el carrito del usuario indicado.
+                CartService.LoadCartSecurely(App.CurrentUser.IdDni);
             }
             else
             {
                 IsUserLoggedIn = false;
                 UserName = "";
+
+                // Limpiamos la lista del servicio para que no se quede guardado en la memoria.
+                CartService.CartItems.Clear();
             }
         }
     }

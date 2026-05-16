@@ -1,35 +1,43 @@
 ﻿<UserControl x:Class="Games_Factory.Views.GamesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    
-    <Grid Background="#F5F5F5">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F0F2F5">
+
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Background="#E0E0E0" ClipToBounds="True">
+        <Border Grid.Column="0" Background="White" ClipToBounds="True" Margin="0,0,2,0">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" Opacity="0.1" ShadowDepth="2" Direction="0"/>
+            </Border.Effect>
+
             <Border.Style>
                 <Style TargetType="Border">
-                    <Setter Property="Width" Value="250"/>
+                    <Setter Property="Width" Value="280"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsFiltersOpen}" Value="False">
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetProperty="Width"
-                                                         To="0" Duration="0:0:0.3" 
-                                                         DecelerationRatio="0.9"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="Width" To="0" Duration="0:0:0.25">
+                                            <DoubleAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseInOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </DataTrigger.EnterActions>
-
                             <DataTrigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetProperty="Width"
-                                                         To="250" Duration="0:0:0.3" 
-                                                         DecelerationRatio="0.9"/>
+                                        <DoubleAnimation Storyboard.TargetProperty="Width" To="280" Duration="0:0:0.25">
+                                            <DoubleAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseInOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </DataTrigger.ExitActions>
@@ -38,40 +46,124 @@
                 </Style>
             </Border.Style>
 
-            <StackPanel Margin="15">
-                <Grid Margin="0,0,0,20">
-                    <TextBlock Text="FILTRAR POR" FontWeight="Bold" FontSize="18" Foreground="#333" VerticalAlignment="Center"/>
-                    <Button Command="{Binding ToggleFiltersCommand}" Content="✕" 
-                            HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" FontWeight="Bold" Cursor="Hand"/>
-                </Grid>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Margin="25" Width="230" HorizontalAlignment="Left">
 
-                <TextBlock Text="CONSOLA" FontWeight="SemiBold" Margin="0,10,0,5" Foreground="#555"/>
-                <RadioButton Content="Nintendo" IsChecked="{Binding IsNintendo}" Margin="0,5"/>
-                <RadioButton Content="PlayStation" IsChecked="{Binding IsPlayStation}" Margin="0,5"/>
-                <RadioButton Content="Xbox" IsChecked="{Binding IsXbox}" Margin="0,5"/>
-                <RadioButton Content="PC" IsChecked="{Binding IsPC}" Margin="0,5"/>
+                    <Grid Margin="0,0,0,30">
+                        <TextBlock Text="FILTROS" FontWeight="Black" FontSize="20" Foreground="#333" VerticalAlignment="Center"/>
 
-                <Separator Margin="0,20"/>
+                        <Button Command="{Binding ToggleFiltersCommand}" 
+                                HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Cursor="Hand" ToolTip="Cerrar filtros">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" Padding="5">
+                                        <TextBlock x:Name="CloseIcon" Text="✕" FontWeight="Bold" FontSize="18" Foreground="#888"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="CloseIcon" Property="Foreground" Value="#D32F2F"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
 
-                <Button Content="APLICAR FILTROS" Command="{Binding FilterCommand}" 
-                        Background="#333" Foreground="White" FontWeight="Bold" Height="35">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
+                    <TextBlock Text="PLATAFORMA" FontWeight="Bold" FontSize="12" Margin="0,0,0,15" Foreground="#888"/>
 
-                <Button Content="LIMPIAR SELECCIÓN" Command="{Binding ClearFiltersCommand}" 
-                        Background="Transparent" BorderBrush="#333" BorderThickness="1" Foreground="#333" 
-                        FontWeight="Bold" Height="35" Margin="0,10,0,0">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
-            </StackPanel>
+                    <StackPanel Margin="0,0,0,30">
+                        <StackPanel.Resources>
+                            <Style TargetType="RadioButton">
+                                <Setter Property="Foreground" Value="#444"/>
+                                <Setter Property="FontSize" Value="15"/>
+                                <Setter Property="Margin" Value="0,0,0,12"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="RadioButton">
+                                            <StackPanel Orientation="Horizontal" Background="Transparent">
+                                                <Border x:Name="Border" Width="18" Height="18" CornerRadius="9" BorderThickness="2" BorderBrush="#AAA" Background="White" VerticalAlignment="Center">
+                                                    <Border x:Name="CheckMark" Width="8" Height="8" CornerRadius="4" Background="#D32F2F" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <ContentPresenter x:Name="Content" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Border" Property="BorderBrush" Value="#D32F2F"/>
+                                                    <Setter TargetName="Content" Property="TextElement.Foreground" Value="#D32F2F"/>
+                                                </Trigger>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="Border" Property="BorderBrush" Value="#D32F2F"/>
+                                                    <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                                                    <Setter TargetName="Content" Property="TextElement.Foreground" Value="#D32F2F"/>
+                                                    <Setter TargetName="Content" Property="TextElement.FontWeight" Value="Bold"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </StackPanel.Resources>
+
+                        <RadioButton Content="Nintendo" IsChecked="{Binding IsNintendo}"/>
+                        <RadioButton Content="PlayStation" IsChecked="{Binding IsPlayStation}"/>
+                        <RadioButton Content="Xbox" IsChecked="{Binding IsXbox}"/>
+                        <RadioButton Content="PC" IsChecked="{Binding IsPC}"/>
+                    </StackPanel>
+
+                    <Separator Margin="0,0,0,30" Background="#EEE"/>
+
+                    <Button Command="{Binding FilterCommand}" Margin="0,0,0,10" Cursor="Hand" Height="45">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#D32F2F"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                <TextBlock Text="APLICAR FILTROS" FontWeight="Bold" FontSize="14" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#B71C1C"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Command="{Binding ClearFiltersCommand}" Cursor="Hand" Height="45">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="#666"/>
+                                <Setter Property="BorderBrush" Value="#999"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="8">
+                                                <TextBlock Text="LIMPIAR SELECCIÓN" FontWeight="Bold" FontSize="14" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#F5F5F5"/>
+                                                    <Setter Property="Foreground" Value="#333"/>
+                                                    <Setter Property="BorderBrush" Value="#333"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                </StackPanel>
+            </ScrollViewer>
         </Border>
 
         <Grid Grid.Column="1">
@@ -81,10 +173,30 @@
             </Grid.RowDefinitions>
 
             <Button Grid.Row="0" Command="{Binding ToggleFiltersCommand}" 
-                    HorizontalAlignment="Left" Margin="10,10,0,0" Background="Transparent" BorderThickness="0" Cursor="Hand">
+                    HorizontalAlignment="Left" Margin="30,20,0,10" Cursor="Hand">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="Visibility" Value="Collapsed"/>
+                        <Setter Property="Background" Value="White"/>
+                        <Setter Property="BorderBrush" Value="#DDD"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Padding="15,8" CornerRadius="20">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="☰" FontSize="16" Margin="0,0,8,0" Foreground="#555" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Mostrar Filtros" FontSize="14" FontWeight="Bold" Foreground="#333" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F5F5F5"/>
+                                            <Setter Property="BorderBrush" Value="#CCC"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsFiltersOpen}" Value="False">
                                 <Setter Property="Visibility" Value="Visible"/>
@@ -92,35 +204,52 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="☰" FontSize="20" Margin="0,0,5,0"/>
-                    <TextBlock Text="Mostrar Filtros" VerticalAlignment="Center" FontWeight="Bold"/>
-                </StackPanel>
             </Button>
 
-            <ScrollViewer Grid.Row="1" Padding="20">
-                <ItemsControl ItemsSource="{Binding GamesList}">
+            <ScrollViewer Grid.Row="1" Padding="30,10,30,30" VerticalScrollBarVisibility="Auto">
+
+                <ItemsControl ItemsSource="{Binding GamesList}" HorizontalAlignment="Center">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel/>
+                            <WrapPanel HorizontalAlignment="Center"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
+
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Command="{Binding DataContext.SelectGameCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                                    CommandParameter="{Binding}" Margin="10" Background="White" BorderBrush="#CCC" Cursor="Hand">
+                                    CommandParameter="{Binding}" Margin="15" Background="Transparent" BorderThickness="0" Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Border Background="White" CornerRadius="5" BorderThickness="1" BorderBrush="#DDD" Padding="10">
+
+                                        <Border Background="White" CornerRadius="12" Width="230" VerticalAlignment="Top">
                                             <Border.Effect>
-                                                <DropShadowEffect BlurRadius="5" Opacity="0.1" ShadowDepth="2"/>
+                                                <DropShadowEffect BlurRadius="12" Opacity="0.1" ShadowDepth="4" Color="#000"/>
                                             </Border.Effect>
-                                            <StackPanel Width="160">
-                                                <Image Source="{Binding Producto.Imagen, Converter={StaticResource UrlImageConverter}}" Height="220" Stretch="Uniform"/>
-                                                <TextBlock Text="{Binding Producto.Nombre}" FontWeight="Bold" TextWrapping="Wrap" Margin="0,10,0,5" TextAlignment="Center"/>
-                                                <TextBlock Text="{Binding Producto.Precio, StringFormat={}{0}€}" Foreground="#D32F2F" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#FAFAFA"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+
+                                            <StackPanel>
+                                                <Border CornerRadius="8" ClipToBounds="True" Margin="15,15,15,10" Height="220" Background="#F9F9F9">
+                                                    <Image Source="{Binding Producto.Imagen, Converter={StaticResource UrlImageConverter}}" Stretch="Uniform"/>
+                                                </Border>
+
+                                                <TextBlock Text="{Binding Producto.Nombre}" FontSize="15" FontWeight="Black" Foreground="#333" TextWrapping="Wrap" Margin="15,0,15,10" TextAlignment="Left" MinHeight="40" MaxHeight="45" TextTrimming="CharacterEllipsis"/>
+
+                                                <Grid Margin="15,0,15,15">
+                                                    <TextBlock Text="{Binding Consola}" FontSize="13" Foreground="#888" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                    <TextBlock Text="{Binding Producto.Precio, StringFormat='{}{0:N2} €'}" FontSize="18" Foreground="#D32F2F" FontWeight="Black" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                                </Grid>
                                             </StackPanel>
                                         </Border>
+
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
@@ -130,4 +259,5 @@
             </ScrollViewer>
         </Grid>
     </Grid>
+
 </UserControl>

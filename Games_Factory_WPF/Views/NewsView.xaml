@@ -4,24 +4,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="700" d:DesignWidth="1000">
-    <Grid Background="#F5F5F5">
+             d:DesignHeight="700" d:DesignWidth="1000"
+             Background="#F0F2F5">
+
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0" Background="#E0E0E0" ClipToBounds="True">
+        <Border Grid.Column="0" Background="White" ClipToBounds="True" Margin="0,0,2,0">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="10" Opacity="0.1" ShadowDepth="2" Direction="0" RenderingBias="Performance"/>
+            </Border.Effect>
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="Width" Value="250"/>
                     <Setter Property="Visibility" Value="Visible"/>
-
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding SelectedNews, Converter={StaticResource NullToBoolConverter}}" Value="True">
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </DataTrigger>
-
                         <DataTrigger Binding="{Binding IsFiltersOpen}" Value="False">
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard>
@@ -42,39 +45,120 @@
                 </Style>
             </Border.Style>
 
-            <StackPanel Margin="15">
-                <Grid Margin="0,0,0,20">
-                    <TextBlock Text="CATEGORÍAS" FontWeight="Bold" FontSize="18" Foreground="#333" VerticalAlignment="Center"/>
-                    <Button Command="{Binding ToggleFiltersCommand}" Content="✕" 
-                            HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" FontWeight="Bold" Cursor="Hand"/>
-                </Grid>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Margin="20">
 
-                <RadioButton Content="Playstation" IsChecked="{Binding IsCatPlaystation}" Margin="0,5"/>
-                <RadioButton Content="Nintendo" IsChecked="{Binding IsCatNintendo}" Margin="0,5"/>
-                <RadioButton Content="Xbox" IsChecked="{Binding IsCatXbox}" Margin="0,5"/>
-                <RadioButton Content="PC" IsChecked="{Binding IsCatPC}" Margin="0,5"/>
+                    <Grid Margin="0,0,0,30">
+                        <TextBlock Text="CATEGORÍAS" FontWeight="Black" FontSize="18" Foreground="#333" VerticalAlignment="Center"/>
+                        <Button Command="{Binding ToggleFiltersCommand}" 
+                                HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Cursor="Hand" ToolTip="Cerrar menú">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" Padding="5">
+                                        <TextBlock x:Name="CloseIcon" Text="✕" FontWeight="Bold" FontSize="16" Foreground="#888"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="CloseIcon" Property="Foreground" Value="#D32F2F"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
 
-                <Separator Margin="0,20"/>
+                    <StackPanel Margin="0,0,0,30">
+                        <StackPanel.Resources>
+                            <Style TargetType="RadioButton">
+                                <Setter Property="Foreground" Value="#444"/>
+                                <Setter Property="FontSize" Value="14"/>
+                                <Setter Property="Margin" Value="0,0,0,10"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="RadioButton">
+                                            <StackPanel Orientation="Horizontal" Background="Transparent">
+                                                <Border x:Name="Border" Width="16" Height="16" CornerRadius="8" BorderThickness="2" BorderBrush="#AAA" Background="White" VerticalAlignment="Center">
+                                                    <Border x:Name="CheckMark" Width="8" Height="8" CornerRadius="4" Background="#D32F2F" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                                <ContentPresenter x:Name="Content" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Border" Property="BorderBrush" Value="#D32F2F"/>
+                                                    <Setter TargetName="Content" Property="TextElement.Foreground" Value="#D32F2F"/>
+                                                </Trigger>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="Border" Property="BorderBrush" Value="#D32F2F"/>
+                                                    <Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/>
+                                                    <Setter TargetName="Content" Property="TextElement.Foreground" Value="#D32F2F"/>
+                                                    <Setter TargetName="Content" Property="TextElement.FontWeight" Value="Bold"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </StackPanel.Resources>
 
-                <Button Content="FILTRAR" Command="{Binding FilterCommand}" 
-                        Background="#D32F2F" Foreground="White" FontWeight="Bold" Height="35">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
+                        <RadioButton Content="Playstation" IsChecked="{Binding IsCatPlaystation}"/>
+                        <RadioButton Content="Nintendo" IsChecked="{Binding IsCatNintendo}"/>
+                        <RadioButton Content="Xbox" IsChecked="{Binding IsCatXbox}"/>
+                        <RadioButton Content="PC" IsChecked="{Binding IsCatPC}"/>
+                    </StackPanel>
 
-                <Button Content="VER TODAS" Command="{Binding ClearCommand}" 
-                        Background="Transparent" BorderBrush="#333" BorderThickness="1" Foreground="#333" 
-                        FontWeight="Bold" Height="35" Margin="0,10,0,0">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
-            </StackPanel>
+                    <Separator Margin="0,0,0,30" Background="#EEE"/>
+
+                    <Button Command="{Binding FilterCommand}" Margin="0,0,0,10" Cursor="Hand" Height="40">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#D32F2F"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                <TextBlock Text="FILTRAR NOTICIAS" FontWeight="Bold" FontSize="13" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#B71C1C"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Command="{Binding ClearCommand}" Cursor="Hand" Height="40">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="#666"/>
+                                <Setter Property="BorderBrush" Value="#999"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="6">
+                                                <TextBlock Text="VER TODAS" FontWeight="Bold" FontSize="13" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#F5F5F5"/>
+                                                    <Setter Property="Foreground" Value="#333"/>
+                                                    <Setter Property="BorderBrush" Value="#333"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
         </Border>
 
         <Grid Grid.Column="1">
@@ -84,10 +168,30 @@
             </Grid.RowDefinitions>
 
             <Button Grid.Row="0" Command="{Binding ToggleFiltersCommand}" 
-                    HorizontalAlignment="Left" Margin="20,10,0,0" Background="Transparent" BorderThickness="0" Cursor="Hand">
+                    HorizontalAlignment="Left" Margin="20,10,0,0" Cursor="Hand">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="Visibility" Value="Collapsed"/>
+                        <Setter Property="Background" Value="White"/>
+                        <Setter Property="BorderBrush" Value="#DDD"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Padding="15,8" CornerRadius="20">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="☰" FontSize="16" Margin="0,0,8,0" Foreground="#555" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Categorías" FontSize="14" FontWeight="Bold" Foreground="#333" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#F5F5F5"/>
+                                            <Setter Property="BorderBrush" Value="#CCC"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsFiltersOpen}" Value="False">
                                 <Setter Property="Visibility" Value="Visible"/>
@@ -98,15 +202,10 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="☰" FontSize="20" Margin="0,0,5,0"/>
-                    <TextBlock Text="Categorías" VerticalAlignment="Center" FontWeight="Bold"/>
-                </StackPanel>
             </Button>
 
-            <Grid Grid.Row="1" Margin="20">
-
-                <ScrollViewer>
+            <Grid x:Name="ContentGrid" Grid.Row="1" Margin="20,20,0,20">
+                <ScrollViewer Padding="0,0,20,0">
                     <ScrollViewer.Style>
                         <Style TargetType="ScrollViewer">
                             <Setter Property="Visibility" Value="Visible"/>
@@ -118,30 +217,82 @@
                         </Style>
                     </ScrollViewer.Style>
 
-                    <StackPanel>
-                        <TextBlock Text="Últimas Noticias" FontSize="28" FontWeight="Bold" Margin="0,0,0,20" Foreground="#333"/>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="Última Hora" FontSize="36" FontWeight="Black" Margin="0,0,0,30" Foreground="#333" HorizontalAlignment="Left"/>
+
                         <ItemsControl ItemsSource="{Binding NewsList}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Button Command="{Binding DataContext.SelectNewsCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                                            CommandParameter="{Binding}"
-                                            Margin="0,0,0,20" Background="Transparent" BorderThickness="0" Cursor="Hand">
+                                            CommandParameter="{Binding}" Margin="0,0,0,30" Background="Transparent" BorderThickness="0" Cursor="Hand">
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
-                                                <Border Background="White" CornerRadius="8" Padding="0">
+                                                <Border Background="White" CornerRadius="12" ClipToBounds="True">
                                                     <Border.Effect>
-                                                        <DropShadowEffect BlurRadius="10" Opacity="0.1" ShadowDepth="2"/>
+                                                        <DropShadowEffect BlurRadius="15" Opacity="0.08" ShadowDepth="3" Color="#000" RenderingBias="Performance"/>
                                                     </Border.Effect>
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="#FAFAFA"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+
                                                     <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="200"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Image Source="{Binding Imagen, Converter={StaticResource UrlImageConverter}}" Stretch="UniformToFill" Height="140" Grid.Column="0"/>
-                                                        <StackPanel Grid.Column="1" Margin="20,10">
-                                                            <TextBlock Text="{Binding Titulo}" FontSize="18" FontWeight="Bold" Foreground="#D32F2F" TextWrapping="Wrap"/>
-                                                            <TextBlock Text="{Binding CategoriaNoticia}" FontSize="12" Foreground="Gray" FontWeight="Bold" Margin="0,5"/>
-                                                            <TextBlock Text="{Binding Descripcion}" TextWrapping="Wrap" Margin="0,5,0,0" MaxHeight="60" TextTrimming="CharacterEllipsis"/>
+                                                        <Grid>
+                                                            <Grid.Style>
+                                                                <Style TargetType="Grid">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding DataContext.IsWideLayout, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False">
+                                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Grid.Style>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="380"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <Image Grid.Column="0"
+                                                                   Source="{Binding Imagen, Converter={StaticResource UrlImageConverter}}" 
+                                                                   Stretch="UniformToFill" Height="220"/>
+
+                                                            <StackPanel Grid.Column="1" Margin="25" VerticalAlignment="Center">
+                                                                <Border Background="#FFEBEE" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left" Margin="0,0,0,10">
+                                                                    <TextBlock Text="{Binding CategoriaNoticia}" FontSize="12" Foreground="#D32F2F" FontWeight="Bold"/>
+                                                                </Border>
+                                                                <TextBlock Text="{Binding Titulo}" FontSize="22" FontWeight="Black" Foreground="#333" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                                                <TextBlock Text="{Binding Descripcion}" FontSize="15" Foreground="#666" TextWrapping="Wrap" MaxHeight="66" TextTrimming="CharacterEllipsis" LineHeight="22"/>
+                                                            </StackPanel>
+                                                        </Grid>
+
+                                                        <StackPanel>
+                                                            <StackPanel.Style>
+                                                                <Style TargetType="StackPanel">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding DataContext.IsWideLayout, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="False">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </StackPanel.Style>
+
+                                                            <Image Source="{Binding Imagen, Converter={StaticResource UrlImageConverter}}" 
+                                                                   Stretch="UniformToFill" Height="220"/>
+
+                                                            <StackPanel Margin="25">
+                                                                <Border Background="#FFEBEE" CornerRadius="4" Padding="8,4" HorizontalAlignment="Left" Margin="0,0,0,10">
+                                                                    <TextBlock Text="{Binding CategoriaNoticia}" FontSize="12" Foreground="#D32F2F" FontWeight="Bold"/>
+                                                                </Border>
+                                                                <TextBlock Text="{Binding Titulo}" FontSize="22" FontWeight="Black" Foreground="#333" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                                                <TextBlock Text="{Binding Descripcion}" FontSize="15" Foreground="#666" TextWrapping="Wrap" MaxHeight="66" TextTrimming="CharacterEllipsis" LineHeight="22"/>
+                                                            </StackPanel>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
@@ -168,17 +319,26 @@
 
                     <ScrollViewer Padding="40">
                         <StackPanel MaxWidth="900" HorizontalAlignment="Center">
-                            <Button Command="{Binding BackToListCommand}" Content="🡠 Volver a la lista" 
-                                    Background="Transparent" BorderThickness="0" Foreground="#555" FontSize="16" HorizontalAlignment="Left" Margin="0,0,0,20" Cursor="Hand"/>
+                            <Button Command="{Binding BackToListCommand}" 
+                                    Background="Transparent" BorderThickness="0" HorizontalAlignment="Left" Margin="0,0,0,20" Cursor="Hand">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🡠" FontSize="18" Foreground="#555" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Volver a la lista" FontSize="16" FontWeight="Bold" Foreground="#555" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
 
-                            <TextBlock Text="{Binding SelectedNews.Titulo}" FontSize="32" FontWeight="Bold" TextWrapping="Wrap" Foreground="#333"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,10,0,20">
+                            <TextBlock Text="{Binding SelectedNews.Titulo}" FontSize="32" FontWeight="Bold" TextWrapping="Wrap" Foreground="#333" Margin="0,0,0,10"/>
+
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
                                 <TextBlock Text="{Binding SelectedNews.FechaCreacion, StringFormat='Publicado el {0:d}'}" Foreground="Gray"/>
                                 <TextBlock Text=" | " Foreground="Gray"/>
                                 <TextBlock Text="{Binding SelectedNews.CategoriaNoticia}" Foreground="#D32F2F" FontWeight="Bold"/>
                             </StackPanel>
 
-                            <Image Source="{Binding SelectedNews.Imagen, Converter={StaticResource UrlImageConverter}}" MaxHeight="400" Stretch="Uniform" Margin="0,0,0,30"/>
+                            <Border CornerRadius="12" ClipToBounds="True" Margin="0,0,0,30">
+                                <Image Source="{Binding SelectedNews.Imagen, Converter={StaticResource UrlImageConverter}}" MaxHeight="400" Stretch="UniformToFill"/>
+                            </Border>
+
                             <TextBlock Text="{Binding SelectedNews.Historia}" FontSize="18" LineHeight="28" TextWrapping="Wrap" TextAlignment="Justify" Foreground="#444"/>
                         </StackPanel>
                     </ScrollViewer>

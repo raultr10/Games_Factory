@@ -4,76 +4,175 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="500">
-    <Grid Background="#E0E0E0">
+             d:DesignHeight="800" d:DesignWidth="600"
+             Background="#F0F2F5"
+             UseLayoutRounding="True" 
+             SnapsToDevicePixels="True">
+
+    <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="20">
-            <Border Background="White" Width="450" CornerRadius="15" Padding="30" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+            <Border Background="White" Width="580" CornerRadius="15" Padding="40" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="20" Opacity="0.2"/>
+                    <DropShadowEffect BlurRadius="20" Opacity="0.08" ShadowDepth="4" Color="#000" RenderingBias="Performance"/>
                 </Border.Effect>
 
                 <StackPanel>
-                    <TextBlock Text="Crear Cuenta" FontSize="26" FontWeight="Bold" Foreground="#333" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
-                    <Grid>
+                    <TextBlock Text="CREAR CUENTA" FontSize="26" FontWeight="Black" Foreground="#333" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                    <TextBlock Text="Únete a Games Factory hoy mismo" FontSize="14" Foreground="#888" HorizontalAlignment="Center" Margin="0,0,0,30"/>
+
+                    <Grid Margin="0,0,0,15">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="15"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
+
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="DNI *" Foreground="#666" FontWeight="Bold"/>
-                            <TextBox Text="{Binding Dni}" Height="30" VerticalContentAlignment="Center" Margin="0,5,0,15"/>
+                            <TextBlock Text="DNI *" FontWeight="Bold" FontSize="13" Foreground="#555" Margin="0,0,0,8"/>
+                            <Border Background="#F9F9F9" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Height="40">
+                                <TextBox Text="{Binding Dni}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Padding="12,0" FontSize="14" Foreground="#333"/>
+                            </Border>
                         </StackPanel>
+
                         <StackPanel Grid.Column="2">
-                            <TextBlock Text="Nombre *" Foreground="#666" FontWeight="Bold"/>
-                            <TextBox Text="{Binding Nombre}" Height="30" VerticalContentAlignment="Center" Margin="0,5,0,15"/>
+                            <TextBlock Text="Nombre *" FontWeight="Bold" FontSize="13" Foreground="#555" Margin="0,0,0,8"/>
+                            <Border Background="#F9F9F9" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Height="40">
+                                <TextBox Text="{Binding Nombre}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Padding="12,0" FontSize="14" Foreground="#333"/>
+                            </Border>
                         </StackPanel>
                     </Grid>
 
-                    <TextBlock Text="Apellidos" Foreground="#666"/>
-                    <TextBox Text="{Binding Apellidos}" Height="30" VerticalContentAlignment="Center" Margin="0,5,0,15"/>
+                    <TextBlock Text="Apellidos" FontWeight="Bold" FontSize="13" Foreground="#555" Margin="0,0,0,8"/>
+                    <Border Background="#F9F9F9" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Height="40" Margin="0,0,0,15">
+                        <TextBox Text="{Binding Apellidos}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Padding="12,0" FontSize="14" Foreground="#333"/>
+                    </Border>
 
-                    <Grid>
+                    <Grid Margin="0,0,0,15">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="1.5*"/>
+                            <ColumnDefinition Width="15"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
+
                         <StackPanel Grid.Column="0">
-                            <TextBlock Text="Correo Electrónico *" Foreground="#666" FontWeight="Bold"/>
-                            <TextBox Text="{Binding Correo}" Height="30" VerticalContentAlignment="Center" Margin="0,5,0,15"/>
+                            <TextBlock Text="Correo Electrónico *" FontWeight="Bold" FontSize="13" Foreground="#555" Margin="0,0,0,8"/>
+                            <Border Background="#F9F9F9" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Height="40">
+                                <TextBox Text="{Binding Correo}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Padding="12,0" FontSize="14" Foreground="#333"/>
+                            </Border>
                         </StackPanel>
+
                         <StackPanel Grid.Column="2">
-                            <TextBlock Text="Teléfono" Foreground="#666"/>
-                            <TextBox Text="{Binding Telefono}" Height="30" VerticalContentAlignment="Center" Margin="0,5,0,15"/>
+                            <TextBlock Text="Teléfono" FontWeight="Bold" FontSize="13" Foreground="#555" Margin="0,0,0,8"/>
+                            <Border Background="#F9F9F9" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Height="40">
+                                <TextBox Text="{Binding Telefono}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Padding="12,0" FontSize="14" Foreground="#333"/>
+                            </Border>
                         </StackPanel>
                     </Grid>
 
-                    <TextBlock Text="Fecha de Nacimiento" Foreground="#666"/>
-                    <DatePicker SelectedDate="{Binding FechaNacimiento}" Height="30" VerticalContentAlignment="Center" Margin="0,5,0,15"/>
+                    <TextBlock Text="Dirección Completa" FontWeight="Bold" FontSize="13" Foreground="#555" Margin="0,0,0,8"/>
+                    <Border Background="#F9F9F9" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Height="40" Margin="0,0,0,15">
+                        <TextBox Text="{Binding Direccion}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Padding="12,0" FontSize="14" Foreground="#333"/>
+                    </Border>
 
-                    <TextBlock Text="Dirección Completa" Foreground="#666"/>
-                    <TextBox Text="{Binding Direccion}" Height="30" VerticalContentAlignment="Center" Margin="0,5,0,15"/>
+                    <Grid Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="1.5*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="Código Postal" Foreground="#666"/>
-                    <TextBox Text="{Binding CodigoPostal}" Width="100" HorizontalAlignment="Left" Height="30" VerticalContentAlignment="Center" Margin="0,5,0,15"/>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Código Postal" FontWeight="Bold" FontSize="13" Foreground="#555" Margin="0,0,0,8"/>
+                            <Border Background="#F9F9F9" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Height="40">
+                                <TextBox Text="{Binding CodigoPostal}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Padding="12,0" FontSize="14" Foreground="#333"/>
+                            </Border>
+                        </StackPanel>
 
-                    <TextBlock Text="Contraseña *" Foreground="#666" FontWeight="Bold" Margin="0,10,0,0"/>
-                    <PasswordBox x:Name="txtRegPass" Height="30" Margin="0,5,0,25" VerticalContentAlignment="Center"/>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Fecha de Nacimiento" FontWeight="Bold" FontSize="13" Foreground="#555" Margin="0,0,0,8"/>
+                            <Border Background="#F9F9F9" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Height="40">
+                                <DatePicker SelectedDate="{Binding FechaNacimiento}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" FontSize="14" Margin="5,0,0,0"/>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
 
-                    <Button Content="REGISTRARSE" Command="{Binding RegisterCommand}" CommandParameter="{Binding ElementName=txtRegPass}"
-                            Style="{StaticResource BtnRojo}" Height="45" FontSize="16"/>
+                    <TextBlock Text="Contraseña *" FontWeight="Bold" FontSize="13" Foreground="#555" Margin="0,0,0,8"/>
+                    <Border Background="#F9F9F9" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Height="40" Margin="0,0,0,30">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                    <TextBlock HorizontalAlignment="Center" Margin="0,20,0,0">
-                         <Hyperlink Command="{Binding GoBackCommand}" TextDecorations="None">
-                             <Run Text="🡠 Volver al Inicio de Sesión" Foreground="#666"/>
-                         </Hyperlink>
+                            <PasswordBox x:Name="txtRegPass" Grid.Column="0" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Padding="12,0" FontSize="14" Foreground="#333"/>
+                            <TextBox x:Name="txtRegPassVisible" Grid.Column="0" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Padding="12,0" FontSize="14" Foreground="#333" Visibility="Collapsed" TextChanged="txtRegPassVisible_TextChanged"/>
+
+                            <ToggleButton x:Name="btnShowRegPass" Grid.Column="1" Margin="0,0,10,0" Width="30" Height="30" Cursor="Hand" Click="btnShowRegPass_Click">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="Transparent">
+                                            <TextBlock x:Name="EyeIcon" Text="👁" FontSize="18" Foreground="#AAA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="EyeIcon" Property="Foreground" Value="#555"/>
+                                            </Trigger>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="EyeIcon" Property="Foreground" Value="#D32F2F"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                        </Grid>
+                    </Border>
+
+                    <Button Content="REGISTRARSE" Command="{Binding RegisterCommand}" CommandParameter="{Binding ElementName=txtRegPass}" Height="50" Cursor="Hand" Margin="0,0,0,20">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="#D32F2F"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                <TextBlock Text="{TemplateBinding Content}" FontWeight="Black" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#B71C1C"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <TextBlock HorizontalAlignment="Center" FontSize="14">
+                        <Hyperlink Command="{Binding GoBackCommand}" TextDecorations="None" Foreground="#666" FontWeight="Bold">
+                            <Hyperlink.Style>
+                                <Style TargetType="Hyperlink">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="TextDecorations" Value="Underline"/>
+                                            <Setter Property="Foreground" Value="#333"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Hyperlink.Style>
+                            🡠 Volver al Inicio de Sesión
+                        </Hyperlink>
                     </TextBlock>
 
-                    <TextBlock Text="* Campos obligatorios" Foreground="#999" FontSize="12" HorizontalAlignment="Center" Margin="0,20,0,0"/>
+                    <TextBlock Text="* Campos obligatorios" Foreground="#AAA" FontSize="12" HorizontalAlignment="Center" Margin="0,20,0,0"/>
+
                 </StackPanel>
             </Border>
         </ScrollViewer>
     </Grid>
+
 </UserControl>

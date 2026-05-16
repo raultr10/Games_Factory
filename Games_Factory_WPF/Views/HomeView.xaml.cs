@@ -24,5 +24,25 @@ namespace Games_Factory.Views
         {
             InitializeComponent();
         }
+
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Si hay poco espacio se colocarán verticalmente los botones.
+            if (e.NewSize.Width < 900)
+            {
+                Col1.Width = new GridLength(0);
+                Row1.Height = new GridLength(1, GridUnitType.Star);
+
+                Grid.SetColumn(btnNews, 0);
+                Grid.SetRow(btnNews, 1);
+            }
+            else
+            {
+                Col1.Width = new GridLength(1, GridUnitType.Star);
+                Row1.Height = new GridLength(0);
+                Grid.SetColumn(btnNews, 1);
+                Grid.SetRow(btnNews, 0);
+            }
+        }
     }
 }

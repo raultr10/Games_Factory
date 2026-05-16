@@ -9,7 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\" />
+    <None Remove="Assets\fondo_noticias.jpeg" />
+    <None Remove="Assets\Fondo_videojuegos.jpeg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +20,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\fondo_noticias.jpeg" />
+    <Resource Include="Assets\Fondo_videojuegos.jpeg" />
   </ItemGroup>
 
 </Project>

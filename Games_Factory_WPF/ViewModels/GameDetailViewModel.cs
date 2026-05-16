@@ -17,7 +17,9 @@ namespace Games_Factory.ViewModels
 
         public Videojuego SelectedGame { get => _selectedGame; set => SetProperty(ref _selectedGame, value); }
         public int Cantidad { get => _cantidad; set { if (value < 1) value = 1; SetProperty(ref _cantidad, value); } }
-        public RelayCommand BuyCommand { get; }
+
+        public RelayCommand AddToCartCommand { get; }
+        public RelayCommand BuyNowCommand { get; }
         public RelayCommand GoBackCommand { get; }
 
         public GameDetailViewModel(Videojuego game, MainViewModel mainVM)
@@ -26,8 +28,20 @@ namespace Games_Factory.ViewModels
             _mainVM = mainVM;
             GoBackCommand = new RelayCommand(o => _mainVM.CurrentView = new GamesViewModel(_mainVM));
 
-            // Verifico la sesión y luego proceso la compra.
-            BuyCommand = new RelayCommand(o =>
+            AddToCartCommand = new RelayCommand(o =>
+            {
+                if (App.CurrentUser == null)
+                {
+                    MessageBox.Show("Debes iniciar sesión para usar el carrito.", "Atención", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    _mainVM.CurrentView = new LoginViewModel(_mainVM);
+                    return;
+                }
+
+                _mainVM.CartService.AddToCart(SelectedGame, Cantidad, App.CurrentUser.IdDni);
+                MessageBox.Show("Añadido al carrito correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+            });
+
+            BuyNowCommand = new RelayCommand(o =>
             {
                 if (App.CurrentUser == null)
                 {
@@ -36,23 +50,8 @@ namespace Games_Factory.ViewModels
                     return;
                 }
 
-                decimal total = SelectedGame.Producto.Precio * Cantidad;
-                if (MessageBox.Show($"¿Comprar {Cantidad}x {SelectedGame.Producto.Nombre} por {total:C}?", "Confirmar", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                {
-                    using (var ctx = new GameStoreContext())
-                    {
-                        ctx.UsuarioProductos.Add(new UsuarioProducto
-                        {
-                            IdDni = App.CurrentUser.IdDni,
-                            IdProducto = SelectedGame.IdProducto,
-                            Cantidad = Cantidad,
-                            TotalPrecio = total
-                        });
-                        ctx.SaveChanges();
-                    }
-                    MessageBox.Show("¡Compra realizada con éxito!");
-                    _mainVM.CurrentView = new HomeViewModel(_mainVM);
-                }
+                _mainVM.CartService.AddToCart(SelectedGame, Cantidad, App.CurrentUser.IdDni);
+                _mainVM.CurrentView = new CartViewModel(_mainVM);
             });
         }
     }
