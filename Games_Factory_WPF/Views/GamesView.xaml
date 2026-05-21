@@ -19,10 +19,11 @@
                     <Setter Property="Width" Value="280"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsFiltersOpen}" Value="False">
+                            <Setter Property="Width" Value="0"/>
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetProperty="Width" To="0" Duration="0:0:0.25">
+                                        <DoubleAnimation Storyboard.TargetProperty="Width" From="280" To="0" Duration="0:0:0.25" FillBehavior="Stop">
                                             <DoubleAnimation.EasingFunction>
                                                 <QuadraticEase EasingMode="EaseInOut"/>
                                             </DoubleAnimation.EasingFunction>
@@ -33,7 +34,7 @@
                             <DataTrigger.ExitActions>
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetProperty="Width" To="280" Duration="0:0:0.25">
+                                        <DoubleAnimation Storyboard.TargetProperty="Width" From="0" To="280" Duration="0:0:0.25" FillBehavior="Stop">
                                             <DoubleAnimation.EasingFunction>
                                                 <QuadraticEase EasingMode="EaseInOut"/>
                                             </DoubleAnimation.EasingFunction>
@@ -50,10 +51,10 @@
                 <StackPanel Margin="25" Width="230" HorizontalAlignment="Left">
 
                     <Grid Margin="0,0,0,30">
-                        <TextBlock Text="FILTROS" FontWeight="Black" FontSize="20" Foreground="#333" VerticalAlignment="Center"/>
+                        <TextBlock Text="CATEGORÍAS" FontWeight="Black" FontSize="20" Foreground="#333" VerticalAlignment="Center"/>
 
                         <Button Command="{Binding ToggleFiltersCommand}" 
-                                HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Cursor="Hand" ToolTip="Cerrar filtros">
+                            HorizontalAlignment="Right" Background="Transparent" BorderThickness="0" Cursor="Hand" ToolTip="Cerrar filtros">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border Background="{TemplateBinding Background}" Padding="5">
@@ -68,8 +69,6 @@
                             </Button.Template>
                         </Button>
                     </Grid>
-
-                    <TextBlock Text="PLATAFORMA" FontWeight="Bold" FontSize="12" Margin="0,0,0,15" Foreground="#888"/>
 
                     <StackPanel Margin="0,0,0,30">
                         <StackPanel.Resources>
@@ -105,8 +104,8 @@
                             </Style>
                         </StackPanel.Resources>
 
+                        <RadioButton Content="Playstation" IsChecked="{Binding IsPlayStation}"/>
                         <RadioButton Content="Nintendo" IsChecked="{Binding IsNintendo}"/>
-                        <RadioButton Content="PlayStation" IsChecked="{Binding IsPlayStation}"/>
                         <RadioButton Content="Xbox" IsChecked="{Binding IsXbox}"/>
                         <RadioButton Content="PC" IsChecked="{Binding IsPC}"/>
                     </StackPanel>
@@ -173,7 +172,7 @@
             </Grid.RowDefinitions>
 
             <Button Grid.Row="0" Command="{Binding ToggleFiltersCommand}" 
-                    HorizontalAlignment="Left" Margin="30,20,0,10" Cursor="Hand">
+                HorizontalAlignment="Left" Margin="30,20,0,10" Cursor="Hand">
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -218,7 +217,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Command="{Binding DataContext.SelectGameCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                                    CommandParameter="{Binding}" Margin="15" Background="Transparent" BorderThickness="0" Cursor="Hand">
+                                CommandParameter="{Binding}" Margin="15" Background="Transparent" BorderThickness="0" Cursor="Hand">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
 
