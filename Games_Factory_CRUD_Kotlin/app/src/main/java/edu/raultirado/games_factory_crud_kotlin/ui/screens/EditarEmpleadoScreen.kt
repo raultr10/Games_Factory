@@ -135,12 +135,33 @@ fun EditarEmpleadoScreen(
                     }
                     Button(
                         onClick = {
-                            viewModel.actualizarEmpleadoExistente(
-                                idEmp = empleadoId, nombre = nombre, apellidos = apellidos, correo = correo,
-                                direccion = direccion, fechaNaci = fechaNaci, telefono = telefono, cp = codigoPostal, rol = rolUsuario,
-                                onSuccess = { isEditing = false },
-                                onError = { mensajeError = it }
-                            )
+                            val telRegex = Regex("^\\d{9}\$")
+                            val cpRegex = Regex("^\\d{5}\$")
+                            val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$")
+
+                            if (nombre.isBlank() || apellidos.isBlank() || direccion.isBlank() || fechaNaci.isBlank()) {
+                                mensajeError = "No puedes dejar campos personales en blanco."
+                            } else if (!correo.matches(emailRegex)) {
+                                mensajeError = "Introduce un correo válido con su extensión (ejemplo@dominio.com)."
+                            } else if (!telefono.matches(telRegex)) {
+                                mensajeError = "El teléfono debe tener exactamente 9 dígitos."
+                            } else if (!codigoPostal.matches(cpRegex)) {
+                                mensajeError = "El código postal debe tener exactamente 5 dígitos."
+                            } else {
+                                // 1. ¡LA CLAVE ESTÁ AQUÍ! Limpiamos el error de validación local antes de lanzar la petición
+                                mensajeError = ""
+
+                                viewModel.actualizarEmpleadoExistente(
+                                    idEmp = empleadoId, nombre = nombre, apellidos = apellidos, correo = correo,
+                                    direccion = direccion, fechaNaci = fechaNaci, telefono = telefono, cp = codigoPostal, rol = rolUsuario,
+                                    onSuccess = {
+                                        isEditing = false
+                                        // 2. También lo limpiamos aquí para que al salir del modo edición quede impecable
+                                        mensajeError = ""
+                                    },
+                                    onError = { mensajeError = it }
+                                )
+                            }
                         },
                         modifier = Modifier.weight(1f).height(50.dp)
                     ) {

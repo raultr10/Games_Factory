@@ -31,10 +31,12 @@ fun VideojuegosScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.errorMessage.collectAsState()
 
-    // --- NUEVO ESTADO PARA LA BÚSQUEDA ---
     var searchQuery by remember { mutableStateOf("") }
 
-    // Filtramos la lista en tiempo real según lo que se escriba
+    // --- ESTADOS PARA BORRAR ---
+    var juegoABorrar by remember { mutableStateOf<String?>(null) }
+    var mensajeErrorBorrado by remember { mutableStateOf("") }
+
     val juegosFiltrados = listaJuegos.filter {
         it.nombre.contains(searchQuery, ignoreCase = true)
     }
@@ -63,12 +65,50 @@ fun VideojuegosScreen(
             }
         }
     ) { paddingValues ->
+
+        // --- DIÁLOGO DE CONFIRMACIÓN ---
+        if (juegoABorrar != null) {
+            AlertDialog(
+                onDismissRequest = { juegoABorrar = null; mensajeErrorBorrado = "" },
+                title = { Text("Confirmar eliminación") },
+                text = {
+                    Column {
+                        Text("¿Estás seguro de que quieres borrar este videojuego del catálogo?")
+                        if (mensajeErrorBorrado.isNotEmpty()) {
+                            Text(text = mensajeErrorBorrado, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 8.dp))
+                        }
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.eliminarVideojuegoExistente(
+                                idProducto = juegoABorrar!!,
+                                onSuccess = {
+                                    juegoABorrar = null
+                                    mensajeErrorBorrado = ""
+                                },
+                                onError = { mensajeErrorBorrado = it }
+                            )
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                    ) {
+                        Text("Borrar", fontWeight = FontWeight.Bold)
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(onClick = { juegoABorrar = null; mensajeErrorBorrado = "" }) {
+                        Text("Cancelar", fontWeight = FontWeight.Bold)
+                    }
+                }
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // --- BARRA DE BÚSQUEDA ---
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
@@ -94,28 +134,22 @@ fun VideojuegosScreen(
 
             Box(modifier = Modifier.fillMaxSize()) {
                 when {
-                    isLoading -> {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                    }
-                    error != null -> {
-                        Text(text = error ?: "Error desconocido", color = Color.Red, modifier = Modifier.align(Alignment.Center))
-                    }
+                    isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    error != null -> Text(text = error ?: "Error desconocido", color = Color.Red, modifier = Modifier.align(Alignment.Center))
                     juegosFiltrados.isEmpty() && searchQuery.isNotEmpty() -> {
-                        // Mensaje si la búsqueda no encuentra nada
-                        Text(
-                            text = "No se encontró ningún juego llamado '$searchQuery'",
-                            color = Color.Gray,
-                            modifier = Modifier.align(Alignment.Center).padding(16.dp)
-                        )
+                        Text(text = "No se encontró ningún juego llamado '$searchQuery'", color = Color.Gray, modifier = Modifier.align(Alignment.Center).padding(16.dp))
                     }
                     else -> {
-                        // LA LISTA DE JUEGOS (AHORA USAMOS LA FILTRADA)
                         LazyColumn(
                             contentPadding = PaddingValues(bottom = 80.dp, start = 16.dp, end = 16.dp, top = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(juegosFiltrados) { juego ->
-                                VideojuegoItem(juego, onClick = {navController.navigate("${Screens.EditarVideojuegoScreen.route}/${juego.idProducto}")})
+                                VideojuegoItem(
+                                    juego = juego,
+                                    onClick = { navController.navigate("${Screens.EditarVideojuegoScreen.route}/${juego.idProducto}") },
+                                    onDeleteClick = { juegoABorrar = juego.idProducto }
+                                )
                             }
                         }
                     }

@@ -171,12 +171,16 @@ fun EditarNoticiaScreen(
                     }
                     Button(
                         onClick = {
-                            viewModel.actualizarNoticiaExistente(
-                                idNoticia = noticiaId, titulo = titulo, descripcion = descripcion,
-                                historia = historia, fechaCreacion = fechaCreacion, categoria = categoriaNoticia,
-                                onSuccess = { isEditing = false; mensajeError = "" },
-                                onError = { error -> mensajeError = error }
-                            )
+                            if (titulo.isBlank() || descripcion.isBlank() || historia.isBlank() || fechaCreacion.isBlank()) {
+                                mensajeError = "No puedes dejar ningún campo en blanco."
+                            } else {
+                                viewModel.actualizarNoticiaExistente(
+                                    idNoticia = noticiaId, titulo = titulo, descripcion = descripcion,
+                                    historia = historia, fechaCreacion = fechaCreacion, categoria = categoriaNoticia,
+                                    onSuccess = { isEditing = false; mensajeError = "" },
+                                    onError = { error -> mensajeError = error }
+                                )
+                            }
                         },
                         modifier = Modifier.weight(1f).height(50.dp)
                     ) {

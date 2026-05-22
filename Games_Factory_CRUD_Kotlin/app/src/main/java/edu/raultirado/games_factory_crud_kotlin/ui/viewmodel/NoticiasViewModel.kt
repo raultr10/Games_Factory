@@ -105,4 +105,21 @@ class NoticiasViewModel(application: Application) : AndroidViewModel(application
             }
         }
     }
+    fun eliminarNoticiaExistente(idNoticia: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val exito = repository.eliminarNoticia(idNoticia)
+                withContext(Dispatchers.Main) {
+                    if (exito) {
+                        fetchNoticias() // Recargamos la lista
+                        onSuccess()
+                    } else {
+                        onError("Error al eliminar la noticia.")
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) { onError("Error de conexión: ${e.message}") }
+            }
+        }
+    }
 }

@@ -187,13 +187,19 @@ fun EditarVideojuegoScreen(
                     }
                     Button(
                         onClick = {
-                            viewModel.actualizarVideojuegoExistente(
-                                idProducto = juegoId, nombre = nombre, descripcion = descripcion,
-                                precioStr = precio, anyoStr = anyo, categoria = categoria,
-                                consola = tipoConsola, idioma = idioma, compania = compania,
-                                onSuccess = { isEditing = false; mensajeError = "" },
-                                onError = { error -> mensajeError = error }
-                            )
+                            if (nombre.isBlank() || descripcion.isBlank() || precio.isBlank() || anyo.isBlank()) {
+                                mensajeError = "Ningún campo puede quedar vacío."
+                            } else if (anyo.length != 4) {
+                                mensajeError = "El año debe tener exactamente 4 dígitos."
+                            } else {
+                                viewModel.actualizarVideojuegoExistente(
+                                    idProducto = juegoId, nombre = nombre, descripcion = descripcion,
+                                    precioStr = precio, anyoStr = anyo, categoria = categoria,
+                                    consola = tipoConsola, idioma = idioma, compania = compania,
+                                    onSuccess = { isEditing = false; mensajeError = "" },
+                                    onError = { error -> mensajeError = error }
+                                )
+                            }
                         },
                         modifier = Modifier.weight(1f).height(50.dp)
                     ) {

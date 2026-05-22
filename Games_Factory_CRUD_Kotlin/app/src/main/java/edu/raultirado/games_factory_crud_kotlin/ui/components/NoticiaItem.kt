@@ -3,8 +3,11 @@ package edu.raultirado.games_factory_crud_kotlin.ui.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -17,17 +20,18 @@ import edu.raultirado.games_factory_crud_kotlin.config.AppConfig
 import edu.raultirado.games_factory_crud_kotlin.data.model.Noticia
 
 @Composable
-fun NoticiaItem(noticia: Noticia, onClick: () -> Unit) {
+fun NoticiaItem(noticia: Noticia, onClick: () -> Unit, onDeleteClick: () -> Unit) {
     Card(
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() } // Hacemos que la tarjeta sea pulsable
+            .clickable { onClick() }
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
+            // Imagen de cabecera
             val rutaImagen = "${AppConfig.URL_IMAGENES}/${noticia.imagen}"
 
             AsyncImage(
@@ -35,13 +39,14 @@ fun NoticiaItem(noticia: Noticia, onClick: () -> Unit) {
                 contentDescription = "Imagen de la noticia: ${noticia.titulo}",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp), // Altura fija para que todas se vean parejas
+                    .height(180.dp),
                 contentScale = ContentScale.Crop
             )
 
-            // TEXTOS DE LA NOTICIA
+            // Contenido de texto con padding
             Column(modifier = Modifier.padding(16.dp)) {
-                // Categoría en pequeño y con color primario
+
+                // 1. Categoría (Ahora sola arriba)
                 Text(
                     text = noticia.categoriaNoticia.uppercase(),
                     color = MaterialTheme.colorScheme.primary,
@@ -51,7 +56,7 @@ fun NoticiaItem(noticia: Noticia, onClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Título principal
+                // 2. Titular
                 Text(
                     text = noticia.titulo,
                     style = MaterialTheme.typography.titleLarge,
@@ -60,7 +65,7 @@ fun NoticiaItem(noticia: Noticia, onClick: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Descripción (cortada a 3 líneas máximo para no hacer la tarjeta gigante)
+                // 3. Descripción (Entradilla)
                 Text(
                     text = noticia.descripcion,
                     style = MaterialTheme.typography.bodyMedium,
@@ -68,14 +73,35 @@ fun NoticiaItem(noticia: Noticia, onClick: () -> Unit) {
                     overflow = TextOverflow.Ellipsis
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp)) // Un poco más de espacio antes del pie
 
-                // Fecha
-                Text(
-                    text = noticia.fechaCreacion,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.Gray
-                )
+                // --- PIE DE TARJETA (NUEVA ESTRUCTURA) ---
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically // Alinea texto e icono verticalmente
+                ) {
+                    // 4. Fecha (A la izquierda)
+                    Text(
+                        text = noticia.fechaCreacion,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.Gray
+                    )
+
+                    // Spacer flexible que empuja todo lo que viene después a la derecha
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    // 5. El icono de la papelera (AHORA AQUÍ, ABAJO A LA DERECHA)
+                    IconButton(
+                        onClick = onDeleteClick,
+                        modifier = Modifier.size(28.dp) // Un pelín más grande para que sea fácil pulsar
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Borrar noticia",
+                            tint = MaterialTheme.colorScheme.error // Rojo
+                        )
+                    }
+                }
             }
         }
     }

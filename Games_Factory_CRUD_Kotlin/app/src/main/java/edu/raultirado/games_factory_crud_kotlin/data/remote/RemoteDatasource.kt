@@ -500,4 +500,59 @@ class RemoteDatasource {
         }
         return exito
     }
+    fun eliminarVideojuego(idProducto: String): Boolean {
+        var exito = false
+        val connection = DbConnection.getConnection()
+        try {
+            if (connection != null) {
+                connection.autoCommit = false
+
+                // 1. Borramos de la tabla hija (Videojuego)
+                val queryVid = "DELETE FROM Videojuego WHERE ID_producto = ?"
+                val stmtVid = connection.prepareStatement(queryVid)
+                stmtVid.setString(1, idProducto)
+                stmtVid.executeUpdate()
+                stmtVid.close()
+
+                // 2. Borramos de la tabla padre (Producto)
+                val queryProd = "DELETE FROM Producto WHERE ID_producto = ?"
+                val stmtProd = connection.prepareStatement(queryProd)
+                stmtProd.setString(1, idProducto)
+                stmtProd.executeUpdate()
+                stmtProd.close()
+
+                connection.commit()
+                exito = true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            try { connection?.rollback() } catch (ex: Exception) {}
+        } finally {
+            try {
+                connection?.autoCommit = true
+                connection?.close()
+            } catch (e: Exception) {}
+        }
+        return exito
+    }
+
+    fun eliminarNoticia(idNoticia: String): Boolean {
+        var exito = false
+        val connection = DbConnection.getConnection()
+        try {
+            if (connection != null) {
+                val query = "DELETE FROM Noticia WHERE ID_noticia = ?"
+                val stmt = connection.prepareStatement(query)
+                stmt.setString(1, idNoticia)
+                stmt.executeUpdate()
+                stmt.close()
+                exito = true
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            connection?.close()
+        }
+        return exito
+    }
 }
