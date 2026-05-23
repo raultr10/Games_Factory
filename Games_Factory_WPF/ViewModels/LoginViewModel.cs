@@ -1,5 +1,6 @@
 ﻿using Games_Factory.Services;
 using Games_Factory.ViewModels.Base;
+using Games_Factory.Validations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +16,10 @@ namespace Games_Factory.ViewModels
         private readonly MainViewModel _mainVM;
         private readonly AuthService _authService;
         private string _email;
+        private string _errorCorreo;
 
         public string Email { get => _email; set => SetProperty(ref _email, value); }
+        public string ErrorCorreo { get => _errorCorreo; set => SetProperty(ref _errorCorreo, value); }
 
         public RelayCommand LoginCommand { get; }
         public RelayCommand RegisterNavCommand { get; }
@@ -29,6 +32,16 @@ namespace Games_Factory.ViewModels
             // Recibo el PasswordBox como parámetro para el login.
             LoginCommand = new RelayCommand(parameter =>
             {
+                var validacion = ValidationRules.ValidarCorreo(Email);
+                if (!validacion.IsValid)
+                {
+                    ErrorCorreo = validacion.Message;
+                    return;
+                }
+
+                // Si es correcto, limpiamos el mensaje de error por si había uno antes
+                ErrorCorreo = string.Empty;
+
                 var passwordBox = parameter as PasswordBox;
                 string password = passwordBox?.Password ?? "";
 

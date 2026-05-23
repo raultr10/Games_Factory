@@ -19,9 +19,10 @@
                     <TextBlock Text="¡Bienvenido de nuevo!" FontSize="14" Foreground="#888" HorizontalAlignment="Center" Margin="0,0,0,30"/>
 
                     <TextBlock Text="Correo Electrónico" FontWeight="Bold" FontSize="13" Foreground="#555" Margin="0,0,0,8"/>
-                    <Border Background="#F9F9F9" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Height="45" Margin="0,0,0,20">
-                        <TextBox Text="{Binding Email}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Padding="15,0" FontSize="15" Foreground="#333"/>
+                    <Border Background="#F9F9F9" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Height="45">
+                        <TextBox Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Padding="15,0" FontSize="15" Foreground="#333"/>
                     </Border>
+                    <TextBlock Text="{Binding ErrorCorreo}" Foreground="#D32F2F" FontSize="11" Margin="5,4,0,5" TextWrapping="Wrap"/>
 
                     <TextBlock Text="Contraseña" FontWeight="Bold" FontSize="13" Foreground="#555" Margin="0,0,0,8"/>
                     <Border Background="#F9F9F9" BorderBrush="#DDD" BorderThickness="1" CornerRadius="8" Height="45" Margin="0,0,0,35">
@@ -32,9 +33,9 @@
                             </Grid.ColumnDefinitions>
 
                             <PasswordBox x:Name="txtPass" Grid.Column="0" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Padding="15,0" FontSize="15" Foreground="#333"/>
-
+                            
                             <TextBox x:Name="txtPassVisible" Grid.Column="0" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Padding="15,0" FontSize="15" Foreground="#333" Visibility="Collapsed" TextChanged="txtPassVisible_TextChanged"/>
-
+                            
                             <ToggleButton x:Name="btnShowPass" Grid.Column="1" Margin="0,0,10,0" Width="30" Height="30" Cursor="Hand" Click="btnShowPass_Click">
                                 <ToggleButton.Template>
                                     <ControlTemplate TargetType="ToggleButton">
