@@ -137,11 +137,29 @@ fun AñadirEmpleadoScreen(navController: NavController, viewModel: EmpleadosView
                 }
                 Button(
                     onClick = {
-                        viewModel.registrarNuevoEmpleado(
-                            dni, nombre, apellidos, correo, contrasena, direccion, fechaNaci, telefono, codigoPostal, categoria,
-                            onSuccess = { navController.popBackStack() },
-                            onError = { error -> mensajeError = error }
-                        )
+                        val dniRegex = Regex("^\\d{2}\\.\\d{3}\\.\\d{3}[A-Z]\$")
+                        val telRegex = Regex("^\\d{9}\$")
+                        val cpRegex = Regex("^\\d{5}\$")
+                        // Expresión regular corregida aquí también
+                        val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$")
+
+                        if (!dni.matches(dniRegex)) {
+                            mensajeError = "DNI inválido. Formato requerido: 21.436.587G"
+                        } else if (nombre.isBlank() || apellidos.isBlank() || direccion.isBlank() || fechaNaci.isBlank() || contrasena.isBlank()) {
+                            mensajeError = "Todos los campos personales son obligatorios."
+                        } else if (!correo.matches(emailRegex)) {
+                            mensajeError = "Introduce un correo válido con su extensión (ejemplo@dominio.com)."
+                        } else if (!telefono.matches(telRegex)) {
+                            mensajeError = "El teléfono debe tener exactamente 9 dígitos."
+                        } else if (!codigoPostal.matches(cpRegex)) {
+                            mensajeError = "El código postal debe tener exactamente 5 dígitos."
+                        } else {
+                            viewModel.registrarNuevoEmpleado(
+                                dni, nombre, apellidos, correo, contrasena, direccion, fechaNaci, telefono, codigoPostal, categoria,
+                                onSuccess = { navController.popBackStack() },
+                                onError = { error -> mensajeError = error }
+                            )
+                        }
                     },
                     modifier = Modifier.weight(1f).height(50.dp)
                 ) {

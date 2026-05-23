@@ -10,10 +10,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.VideogameAsset
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +29,7 @@ import edu.raultirado.games_factory_crud_kotlin.config.AppConfig
 import edu.raultirado.games_factory_crud_kotlin.data.model.Videojuego
 
 @Composable
-fun VideojuegoItem(juego: Videojuego, onClick: () -> Unit) {
+fun VideojuegoItem(juego: Videojuego, onClick: () -> Unit, onDeleteClick: () -> Unit) {
     Card(
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -48,7 +49,7 @@ fun VideojuegoItem(juego: Videojuego, onClick: () -> Unit) {
                 model = rutaImagen,
                 contentDescription = "Carátula de ${juego.nombre}",
                 modifier = Modifier
-                    .size(80.dp) // Un poco más grande para que se vea bien
+                    .size(80.dp)
                     .clip(RoundedCornerShape(8.dp)),
                 contentScale = ContentScale.Crop
             )
@@ -69,6 +70,18 @@ fun VideojuegoItem(juego: Videojuego, onClick: () -> Unit) {
                     text = "${juego.precio} €",
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.tertiary
+                )
+            }
+
+            // AÑADIDO: Spacer flexible para empujar el botón al extremo derecho
+            Spacer(modifier = Modifier.weight(1f))
+
+            // AÑADIDO: Botón de la papelera
+            IconButton(onClick = onDeleteClick) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Borrar videojuego",
+                    tint = MaterialTheme.colorScheme.error // Rojo por defecto
                 )
             }
         }

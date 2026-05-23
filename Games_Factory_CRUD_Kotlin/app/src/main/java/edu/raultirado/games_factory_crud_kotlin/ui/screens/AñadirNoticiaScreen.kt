@@ -141,7 +141,15 @@ fun AñadirNoticiaScreen(navController: NavController, viewModel: NoticiasViewMo
                 }
                 Button(
                     onClick = {
-                        if (categoriaNoticia == "Selecciona...") {
+                        val idRegex = Regex("^[A-Z]\\d{2}\\.\\d{3}\\.\\d{3}[A-Z]\$")
+
+                        if (imageUri == null) {
+                            mensajeError = "Debes adjuntar una imagen de portada."
+                        } else if (!idNoticia.matches(idRegex)) {
+                            mensajeError = "ID inválido. Formato requerido: K32.564.924Q"
+                        } else if (titulo.isBlank() || descripcion.isBlank() || historia.isBlank() || fechaCreacion.isBlank()) {
+                            mensajeError = "Por favor, rellena todos los campos de texto."
+                        } else if (categoriaNoticia == "Selecciona...") {
                             mensajeError = "Por favor, elige una plataforma para la noticia."
                         } else {
                             viewModel.registrarNuevaNoticia(

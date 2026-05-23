@@ -31,10 +31,12 @@ fun NoticiasScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.errorMessage.collectAsState()
 
-    // --- NUEVO ESTADO PARA LA BÚSQUEDA ---
     var searchQuery by remember { mutableStateOf("") }
 
-    // Filtramos la lista de noticias por titular (ignorando mayúsculas/minúsculas)
+    // --- ESTADOS PARA BORRAR ---
+    var noticiaABorrar by remember { mutableStateOf<String?>(null) }
+    var mensajeErrorBorrado by remember { mutableStateOf("") }
+
     val noticiasFiltradas = listaNoticias.filter {
         it.titulo.contains(searchQuery, ignoreCase = true)
     }
@@ -63,12 +65,50 @@ fun NoticiasScreen(
             }
         }
     ) { paddingValues ->
+
+        // --- DIÁLOGO DE CONFIRMACIÓN ---
+        if (noticiaABorrar != null) {
+            AlertDialog(
+                onDismissRequest = { noticiaABorrar = null; mensajeErrorBorrado = "" },
+                title = { Text("Confirmar eliminación") },
+                text = {
+                    Column {
+                        Text("¿Estás seguro de que quieres borrar esta noticia?")
+                        if (mensajeErrorBorrado.isNotEmpty()) {
+                            Text(text = mensajeErrorBorrado, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 8.dp))
+                        }
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.eliminarNoticiaExistente(
+                                idNoticia = noticiaABorrar!!,
+                                onSuccess = {
+                                    noticiaABorrar = null
+                                    mensajeErrorBorrado = ""
+                                },
+                                onError = { mensajeErrorBorrado = it }
+                            )
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                    ) {
+                        Text("Borrar", fontWeight = FontWeight.Bold)
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(onClick = { noticiaABorrar = null; mensajeErrorBorrado = "" }) {
+                        Text("Cancelar", fontWeight = FontWeight.Bold)
+                    }
+                }
+            )
+        }
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // --- BARRA DE BÚSQUEDA ---
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
@@ -94,31 +134,23 @@ fun NoticiasScreen(
 
             Box(modifier = Modifier.fillMaxSize()) {
                 when {
-                    isLoading -> {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                    }
-                    error != null -> {
-                        Text(text = error ?: "Error", color = Color.Red, modifier = Modifier.align(Alignment.Center))
-                    }
+                    isLoading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    error != null -> Text(text = error ?: "Error", color = Color.Red, modifier = Modifier.align(Alignment.Center))
                     noticiasFiltradas.isEmpty() && searchQuery.isNotEmpty() -> {
-                        // Mensaje si la búsqueda no encuentra nada
-                        Text(
-                            text = "No se encontraron noticias con '$searchQuery'",
-                            color = Color.Gray,
-                            modifier = Modifier.align(Alignment.Center).padding(16.dp)
-                        )
+                        Text(text = "No se encontraron noticias con '$searchQuery'", color = Color.Gray, modifier = Modifier.align(Alignment.Center).padding(16.dp))
                     }
-                    listaNoticias.isEmpty() -> {
-                        Text(text = "No hay noticias disponibles.", modifier = Modifier.align(Alignment.Center))
-                    }
+                    listaNoticias.isEmpty() -> Text(text = "No hay noticias disponibles.", modifier = Modifier.align(Alignment.Center))
                     else -> {
-                        // LA LISTA DE NOTICIAS (AHORA USAMOS LA FILTRADA)
                         LazyColumn(
                             contentPadding = PaddingValues(bottom = 80.dp, start = 16.dp, end = 16.dp, top = 8.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             items(noticiasFiltradas) { noticia ->
-                                NoticiaItem(noticia, onClick = {navController.navigate("${Screens.EditarNoticiaScreen.route}/${noticia.idNoticia}")})
+                                NoticiaItem(
+                                    noticia = noticia,
+                                    onClick = { navController.navigate("${Screens.EditarNoticiaScreen.route}/${noticia.idNoticia}") },
+                                    onDeleteClick = { noticiaABorrar = noticia.idNoticia }
+                                )
                             }
                         }
                     }

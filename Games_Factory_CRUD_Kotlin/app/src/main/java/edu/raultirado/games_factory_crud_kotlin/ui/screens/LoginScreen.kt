@@ -1,5 +1,6 @@
 package edu.raultirado.games_factory_crud_kotlin.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -12,6 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -38,11 +41,13 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
             verticalArrangement = Arrangement.Center
         ) {
             // --- LOGO (Icono) ---
-            Icon(
-                imageVector = Icons.Default.VideogameAsset,
-                contentDescription = "Logo Games Factory",
-                modifier = Modifier.size(80.dp),
-                tint = MaterialTheme.colorScheme.primary
+            Image(
+                painter = painterResource(id = edu.raultirado.games_factory_crud_kotlin.R.drawable.logo_games_factory),
+                contentDescription = "Logotipo de Games Factory",
+                modifier = Modifier
+                    .size(150.dp) // Ajusta el tamaño (ancho y alto) como más te guste
+                    .padding(bottom = 16.dp),
+                contentScale = ContentScale.Fit // Hace que mantenga las proporciones perfectas sin deformarse
             )
 
             Spacer(modifier = Modifier.height(16.dp))

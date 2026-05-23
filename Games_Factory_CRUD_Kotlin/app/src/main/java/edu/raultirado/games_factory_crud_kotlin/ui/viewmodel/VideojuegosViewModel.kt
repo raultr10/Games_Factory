@@ -125,4 +125,21 @@ class VideojuegosViewModel(application: Application) : AndroidViewModel(applicat
             }
         }
     }
+    fun eliminarVideojuegoExistente(idProducto: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val exito = repository.eliminarVideojuego(idProducto)
+                withContext(Dispatchers.Main) {
+                    if (exito) {
+                        fetchVideojuegos() // Recargamos la lista
+                        onSuccess()
+                    } else {
+                        onError("Error al eliminar el videojuego.")
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) { onError("Error de conexión: ${e.message}") }
+            }
+        }
+    }
 }

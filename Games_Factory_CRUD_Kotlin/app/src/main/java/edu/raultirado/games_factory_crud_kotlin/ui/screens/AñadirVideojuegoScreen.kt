@@ -159,7 +159,17 @@ fun AñadirVideojuegoScreen(navController: NavController, viewModel: Videojuegos
                 }
                 Button(
                     onClick = {
-                        if (categoria == "Selecciona..." || tipoConsola == "Selecciona..." || idioma == "Selecciona..." || compania == "Selecciona...") {
+                        val idRegex = Regex("^[A-Z]\\d{2}\\.\\d{3}\\.\\d{3}[A-Z]\$")
+
+                        if (imageUri == null) {
+                            mensajeError = "Debes seleccionar una imagen de carátula."
+                        } else if (!idProducto.matches(idRegex)) {
+                            mensajeError = "ID inválido. Formato requerido: F28.971.452Y"
+                        } else if (nombre.isBlank() || descripcion.isBlank() || precio.isBlank() || anyo.isBlank()) {
+                            mensajeError = "Por favor, rellena todos los campos de texto."
+                        } else if (anyo.length != 4) {
+                            mensajeError = "El año debe tener exactamente 4 dígitos."
+                        } else if (categoria == "Selecciona..." || tipoConsola == "Selecciona..." || idioma == "Selecciona..." || compania == "Selecciona...") {
                             mensajeError = "Por favor, completa todos los campos desplegables."
                         } else {
                             viewModel.registrarNuevoVideojuego(

@@ -64,4 +64,12 @@ class Repository(
         idEmp: String, nombre: String, apellidos: String, correo: String,
         direccion: String, fechaNaci: String, telefono: String, cp: String, rol: String
     ): Boolean = remoteDatasource.actualizarEmpleado(idEmp, nombre, apellidos, correo, direccion, fechaNaci, telefono, cp, rol)
+
+    suspend fun eliminarVideojuego(idProducto: String): Boolean {
+        return remoteDatasource.eliminarVideojuego(idProducto)
+    }
+
+    suspend fun eliminarNoticia(idNoticia: String): Boolean {
+        return remoteDatasource.eliminarNoticia(idNoticia)
+    }
 }
