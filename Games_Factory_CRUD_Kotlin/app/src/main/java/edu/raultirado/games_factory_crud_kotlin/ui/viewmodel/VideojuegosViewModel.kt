@@ -17,7 +17,6 @@ class VideojuegosViewModel(application: Application) : AndroidViewModel(applicat
 
     private val repository: Repository
 
-    // Estado: Lista de videojuegos
     private val _videojuegos = MutableStateFlow<List<Videojuego>>(emptyList())
     val videojuegos: StateFlow<List<Videojuego>> = _videojuegos.asStateFlow()
 
@@ -25,7 +24,6 @@ class VideojuegosViewModel(application: Application) : AndroidViewModel(applicat
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    // Estado: Error (opcional, para saber si falla)
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
@@ -65,7 +63,7 @@ class VideojuegosViewModel(application: Application) : AndroidViewModel(applicat
             return
         }
 
-        // GENERADOR DEL NOMBRE DE LA IMAGEN (ej: "Super Mario" -> "super-mario.jpg")
+        //GENERADOR DEL NOMBRE DE LA IMAGEN (ej: "Super Mario" -> "super-mario.jpg")
         val nombreImagen = nombre.lowercase().replace(" ", "-") + ".jpg"
 
         val precioSeguro = precioStr.replace(",", ".").toDoubleOrNull() ?: 0.0

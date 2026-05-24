@@ -80,7 +80,6 @@ fun FormDatePickerField(
                     }
                 }
             ) {
-                // El componente visual del calendario
                 DatePicker(state = datePickerState)
             }
         }

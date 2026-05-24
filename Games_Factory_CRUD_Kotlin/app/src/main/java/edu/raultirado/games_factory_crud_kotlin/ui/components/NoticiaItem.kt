@@ -73,14 +73,14 @@ fun NoticiaItem(noticia: Noticia, onClick: () -> Unit, onDeleteClick: () -> Unit
                     overflow = TextOverflow.Ellipsis
                 )
 
-                Spacer(modifier = Modifier.height(16.dp)) // Un poco más de espacio antes del pie
+                Spacer(modifier = Modifier.height(16.dp))
 
-                // --- PIE DE TARJETA (NUEVA ESTRUCTURA) ---
+                // --- PIE DE TARJETA
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically // Alinea texto e icono verticalmente
+                    verticalAlignment = Alignment.CenterVertically //Alinea texto e icono verticalmente
                 ) {
-                    // 4. Fecha (A la izquierda)
+                    // Fecha
                     Text(
                         text = noticia.fechaCreacion,
                         style = MaterialTheme.typography.labelSmall,
@@ -90,15 +90,15 @@ fun NoticiaItem(noticia: Noticia, onClick: () -> Unit, onDeleteClick: () -> Unit
                     // Spacer flexible que empuja todo lo que viene después a la derecha
                     Spacer(modifier = Modifier.weight(1f))
 
-                    // 5. El icono de la papelera (AHORA AQUÍ, ABAJO A LA DERECHA)
+                    //El icono de la papelera
                     IconButton(
                         onClick = onDeleteClick,
-                        modifier = Modifier.size(28.dp) // Un pelín más grande para que sea fácil pulsar
+                        modifier = Modifier.size(28.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Delete,
                             contentDescription = "Borrar noticia",
-                            tint = MaterialTheme.colorScheme.error // Rojo
+                            tint = MaterialTheme.colorScheme.error
                         )
                     }
                 }

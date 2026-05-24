@@ -45,8 +45,6 @@ fun FormDropdownField(
                     disabledTrailingIconColor = Color.Gray
                 )
             )
-
-            // El menú que se despliega
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
@@ -56,7 +54,7 @@ fun FormDropdownField(
                         text = { Text(text = option) },
                         onClick = {
                             onItemSelected(option)
-                            expanded = false // Cerramos el menú al elegir
+                            expanded = false
                         }
                     )
                 }

@@ -33,7 +33,7 @@ fun VideojuegosScreen(
 
     var searchQuery by remember { mutableStateOf("") }
 
-    // --- ESTADOS PARA BORRAR ---
+    //Estados para borrar
     var juegoABorrar by remember { mutableStateOf<String?>(null) }
     var mensajeErrorBorrado by remember { mutableStateOf("") }
 

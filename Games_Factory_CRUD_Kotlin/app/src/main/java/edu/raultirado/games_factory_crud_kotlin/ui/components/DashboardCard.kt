@@ -41,7 +41,7 @@ fun DashboardCard(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp), // ¡Mucho más alta para llenar la pantalla!
+            .height(200.dp),
         shape = RoundedCornerShape(24.dp), // Bordes más suaves
         colors = CardDefaults.cardColors(containerColor = color),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -49,10 +49,10 @@ fun DashboardCard(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp), // Más espacio interno
+                .padding(24.dp),
             verticalArrangement = Arrangement.SpaceBetween // Separa el icono (arriba) del texto (abajo)
         ) {
-            // Parte superior: Icono grande y flechita
+            //Parte superior: Icono grande y flechita
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -73,7 +73,6 @@ fun DashboardCard(
                     }
                 }
 
-                // Flechita decorativa
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = "Ir",
@@ -82,17 +81,17 @@ fun DashboardCard(
                 )
             }
 
-            // Parte inferior: Textos más grandes
+            //Parte inferior: Textos más grandes
             Column {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.headlineSmall, // Letra más grande
+                    style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.ExtraBold
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = subtitle,
-                    style = MaterialTheme.typography.bodyLarge, // Subtítulo más grande
+                    style = MaterialTheme.typography.bodyLarge, //Subtítulo más grande
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                 )
             }

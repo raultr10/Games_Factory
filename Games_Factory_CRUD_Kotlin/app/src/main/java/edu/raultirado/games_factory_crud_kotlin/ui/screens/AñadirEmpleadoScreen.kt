@@ -124,7 +124,6 @@ fun AñadirEmpleadoScreen(navController: NavController, viewModel: EmpleadosView
                 Text(text = mensajeError, color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 8.dp))
             }
 
-            // --- BOTONES ---
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -140,7 +139,6 @@ fun AñadirEmpleadoScreen(navController: NavController, viewModel: EmpleadosView
                         val dniRegex = Regex("^\\d{2}\\.\\d{3}\\.\\d{3}[A-Z]\$")
                         val telRegex = Regex("^\\d{9}\$")
                         val cpRegex = Regex("^\\d{5}\$")
-                        // Expresión regular corregida aquí también
                         val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$")
 
                         if (!dni.matches(dniRegex)) {

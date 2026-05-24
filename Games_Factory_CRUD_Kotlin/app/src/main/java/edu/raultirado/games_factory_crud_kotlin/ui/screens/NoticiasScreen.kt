@@ -33,7 +33,7 @@ fun NoticiasScreen(
 
     var searchQuery by remember { mutableStateOf("") }
 
-    // --- ESTADOS PARA BORRAR ---
+    //Estados para borrar
     var noticiaABorrar by remember { mutableStateOf<String?>(null) }
     var mensajeErrorBorrado by remember { mutableStateOf("") }
 

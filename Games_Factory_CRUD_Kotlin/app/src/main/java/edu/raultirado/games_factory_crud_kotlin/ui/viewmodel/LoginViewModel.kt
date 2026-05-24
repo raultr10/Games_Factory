@@ -17,14 +17,13 @@ class LoginViewModel : ViewModel() {
 
     private val repository = Repository(RemoteDatasource())
 
-    // Fíjate que ahora onLoginSuccess recibe un String (el Rol)
     fun login(email: String, pass: String, onLoginSuccess: (String) -> Unit) {
         if (email.isBlank() || pass.isBlank()) {
             loginError = "Por favor, rellena todos los campos"
             return
         }
 
-        loginError = "" // Limpiamos errores previos
+        loginError = ""
 
         // Hacemos la llamada a la base de datos en un hilo secundario (IO)
         viewModelScope.launch(Dispatchers.IO) {
@@ -34,10 +33,8 @@ class LoginViewModel : ViewModel() {
 
                 withContext(Dispatchers.Main) {
                     if (rol != null) {
-                        // ¡Login correcto! Pasamos el rol a la pantalla principal
                         onLoginSuccess(rol)
                     } else {
-                        // Credenciales incorrectas
                         loginError = "Correo o contraseña incorrectos"
                     }
                 }

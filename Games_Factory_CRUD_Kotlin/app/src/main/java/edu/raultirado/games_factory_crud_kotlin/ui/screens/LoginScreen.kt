@@ -76,7 +76,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
                     Icon(imageVector = Icons.Default.Email, contentDescription = "Email Icon")
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                shape = RoundedCornerShape(16.dp), // Bordes bien redonditos
+                shape = RoundedCornerShape(16.dp),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -124,7 +124,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(55.dp), // Botón alto, al estilo de las apps de Google
+                    .height(55.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary

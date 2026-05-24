@@ -18,7 +18,6 @@ data class Usuario(
 
     val direccion: String = "",
 
-    // CAMBIO: De Date a String
     @ColumnInfo(name = "fecha_naci")
     val fechaNaci: String = "",
 

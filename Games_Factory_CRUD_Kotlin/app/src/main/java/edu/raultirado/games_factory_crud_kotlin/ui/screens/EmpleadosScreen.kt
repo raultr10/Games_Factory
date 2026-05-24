@@ -69,7 +69,6 @@ fun EmpleadosScreen(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         items(listaEmpleados) { empleado ->
-                            // --- LA MAGIA ESTÁ AQUÍ ---
                             // Envolvemos el item en un Box para que detecte el clic en toda la tarjeta
                             Box(
                                 modifier = Modifier

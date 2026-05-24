@@ -56,12 +56,12 @@ fun MainScreen(navController: NavController, rol: String) {
                 .padding(paddingValues)
                 .padding(horizontal = 24.dp)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(24.dp), // Un poco más de espacio entre tarjetas
+            verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(8.dp))
 
-            // --- CABECERA Y CHIP DE ROL ---
+            // --- CABECERA Y ROL ---
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = "Panel de Gestión",

@@ -148,7 +148,6 @@ fun EditarEmpleadoScreen(
                             } else if (!codigoPostal.matches(cpRegex)) {
                                 mensajeError = "El código postal debe tener exactamente 5 dígitos."
                             } else {
-                                // 1. ¡LA CLAVE ESTÁ AQUÍ! Limpiamos el error de validación local antes de lanzar la petición
                                 mensajeError = ""
 
                                 viewModel.actualizarEmpleadoExistente(
@@ -156,7 +155,6 @@ fun EditarEmpleadoScreen(
                                     direccion = direccion, fechaNaci = fechaNaci, telefono = telefono, cp = codigoPostal, rol = rolUsuario,
                                     onSuccess = {
                                         isEditing = false
-                                        // 2. También lo limpiamos aquí para que al salir del modo edición quede impecable
                                         mensajeError = ""
                                     },
                                     onError = { mensajeError = it }

@@ -57,7 +57,6 @@ fun VideojuegoItem(juego: Videojuego, onClick: () -> Unit, onDeleteClick: () -> 
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // 1. LA CLAVE ESTÁ AQUÍ: Le damos weight(1f) a la columna
             Column(
                 modifier = Modifier.weight(1f)
             ) {
@@ -78,8 +77,6 @@ fun VideojuegoItem(juego: Videojuego, onClick: () -> Unit, onDeleteClick: () -> 
                     color = MaterialTheme.colorScheme.tertiary
                 )
             }
-
-            // 2. Quitamos el Spacer flexible que tenías aquí antes, ya no hace falta.
 
             // 3. El botón de borrar se quedará anclado a la derecha
             IconButton(onClick = onDeleteClick) {

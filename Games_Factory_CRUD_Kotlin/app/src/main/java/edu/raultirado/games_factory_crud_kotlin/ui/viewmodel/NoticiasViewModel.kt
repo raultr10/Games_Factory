@@ -38,7 +38,6 @@ class NoticiasViewModel(application: Application) : AndroidViewModel(application
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                // Llamamos a Docker
                 val lista = repository.fetchNoticias()
                 _noticias.value = lista
             } catch (e: Exception) {
@@ -60,7 +59,6 @@ class NoticiasViewModel(application: Application) : AndroidViewModel(application
             return
         }
 
-        // Generamos: "Nueva Actualización" -> "nueva-actualizacion.jpg"
         val nombreImagen = titulo.lowercase().replace(" ", "-") + ".jpg"
 
         viewModelScope.launch(Dispatchers.IO) {

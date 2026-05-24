@@ -26,7 +26,6 @@ import edu.raultirado.games_factory_crud_kotlin.ui.viewmodel.VideojuegosViewMode
 fun AppNavigation() {
     val navController = rememberNavController()
 
-    // VIEWMODELS COMPARTIDOS (Se crean una sola vez)
     val empleadosViewModelCompartido: EmpleadosViewModel = viewModel()
     val videojuegosViewModelCompartido: VideojuegosViewModel = viewModel()
     val noticiasViewModelCompartido: NoticiasViewModel = viewModel()
@@ -46,7 +45,6 @@ fun AppNavigation() {
         }
 
         composable(Screens.VideojuegosScreen.route) {
-            // Le pasamos el compartido
             VideojuegosScreen(navController = navController, viewModel = videojuegosViewModelCompartido)
         }
 
@@ -59,7 +57,6 @@ fun AppNavigation() {
         }
 
         composable(Screens.AñadirVideojuegoScreen.route) {
-            // Le pasamos el compartido
             AñadirVideojuegoScreen(navController = navController, viewModel = videojuegosViewModelCompartido)
         }
 
@@ -71,7 +68,6 @@ fun AppNavigation() {
             AñadirEmpleadoScreen(navController = navController, viewModel = empleadosViewModelCompartido)
         }
 
-        // --- RUTAS DE EDICIÓN ---
 
         composable("${Screens.EditarVideojuegoScreen.route}/{juegoId}") { backStackEntry ->
             val juegoId = backStackEntry.arguments?.getString("juegoId") ?: ""
@@ -91,7 +87,6 @@ fun AppNavigation() {
             )
         }
 
-        // NUEVO: Ruta para Editar Empleado con su ViewModel compartido
         composable("${Screens.EditarEmpleadoScreen.route}/{empleadoId}") { backStackEntry ->
             val empleadoId = backStackEntry.arguments?.getString("empleadoId") ?: ""
             EditarEmpleadoScreen(

@@ -25,7 +25,7 @@ fun EmpleadoItem(empleado: Empleado) {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Icono de Usuario (Avatar genérico)
+            //Icono de Usuario (Avatar genérico)
             Surface(
                 shape = MaterialTheme.shapes.large,
                 color = MaterialTheme.colorScheme.primaryContainer,
