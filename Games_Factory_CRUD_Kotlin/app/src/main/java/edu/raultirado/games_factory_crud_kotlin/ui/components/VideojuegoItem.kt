@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import edu.raultirado.games_factory_crud_kotlin.config.AppConfig
@@ -56,11 +57,16 @@ fun VideojuegoItem(juego: Videojuego, onClick: () -> Unit, onDeleteClick: () -> 
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            Column {
+            // 1. LA CLAVE ESTÁ AQUÍ: Le damos weight(1f) a la columna
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
                     text = juego.nombre,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2, // Si es muy largo, saltará a la línea de abajo (máx 2)
+                    overflow = TextOverflow.Ellipsis // Si sigue sin caber, pondrá "..."
                 )
                 Text(
                     text = "${juego.tipoConsola} - ${juego.compania}",
@@ -73,15 +79,14 @@ fun VideojuegoItem(juego: Videojuego, onClick: () -> Unit, onDeleteClick: () -> 
                 )
             }
 
-            // AÑADIDO: Spacer flexible para empujar el botón al extremo derecho
-            Spacer(modifier = Modifier.weight(1f))
+            // 2. Quitamos el Spacer flexible que tenías aquí antes, ya no hace falta.
 
-            // AÑADIDO: Botón de la papelera
+            // 3. El botón de borrar se quedará anclado a la derecha
             IconButton(onClick = onDeleteClick) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Borrar videojuego",
-                    tint = MaterialTheme.colorScheme.error // Rojo por defecto
+                    tint = MaterialTheme.colorScheme.error
                 )
             }
         }
