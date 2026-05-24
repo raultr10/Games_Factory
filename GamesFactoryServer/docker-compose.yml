@@ -17,7 +17,7 @@ services:
     image: nginx:alpine
     container_name: servidor_imagenes
     ports:
-      - "8080:80"
+      - "8085:80"
     volumes:
       - ./foto_CRUD:/usr/share/nginx/html
     restart: always
