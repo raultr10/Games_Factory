@@ -85,6 +85,12 @@ namespace Games_Factory.Services
         // Guarda el carrito serializado y encriptado en disco.
         public void SaveCart(string dni, List<CartItemDto> items)
         {
+            if (items == null || items.Count == 0)
+            {
+                ClearCart(dni);
+                return;
+            }
+
             try
             {
                 string json = JsonSerializer.Serialize(items);
