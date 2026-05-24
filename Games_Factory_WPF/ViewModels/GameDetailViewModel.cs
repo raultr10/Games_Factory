@@ -49,7 +49,7 @@ namespace Games_Factory.ViewModels
                 MessageBox.Show("Añadido al carrito correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
             });
 
-            BuyNowCommand = new RelayCommand(o =>
+            BuyNowCommand = new RelayCommand(async o =>
             {
                 if (App.CurrentUser == null)
                 {
@@ -65,8 +65,35 @@ namespace Games_Factory.ViewModels
                     return; 
                 }
 
-                _mainVM.CartService.AddToCart(SelectedGame, Cantidad, App.CurrentUser.IdDni);
-                _mainVM.CurrentView = new CartViewModel(_mainVM);
+                decimal total = SelectedGame.Producto.Precio * Cantidad;
+
+                if (MessageBox.Show($"¿Comprar {Cantidad} {SelectedGame.Producto.Nombre} por {total:C}?", "Confirmar", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        await Task.Run(() =>
+                        {
+                            using (var ctx = new GameStoreContext())
+                            {
+                                ctx.UsuarioProductos.Add(new UsuarioProducto
+                                {
+                                    IdDni = App.CurrentUser.IdDni,
+                                    IdProducto = SelectedGame.IdProducto,
+                                    Cantidad = Cantidad,
+                                    TotalPrecio = total
+                                });
+                                ctx.SaveChanges();
+                            }
+                        });
+
+                        MessageBox.Show("¡Compra realizada con éxito!");
+                        _mainVM.CurrentView = new HomeViewModel(_mainVM);
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("No se ha podido conectar a la base de datos.", "Sin conexión", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
             });
         }
     }

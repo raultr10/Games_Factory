@@ -106,7 +106,7 @@ namespace Games_Factory.ViewModels
             _mainVM = mainVM;
             _authService = new AuthService();
 
-            RegisterCommand = new RelayCommand(parameter =>
+            RegisterCommand = new RelayCommand(async parameter =>
             {
                 var passwordBox = parameter as PasswordBox;
                 string password = passwordBox?.Password ?? "";
@@ -143,18 +143,27 @@ namespace Games_Factory.ViewModels
                     Contrasena = password,
                 };
 
-                // Intento registrar el usuario en la base de datos.
-                if (_authService.RegisterUser(newUser))
+                try
                 {
-                    MessageBox.Show("¡Registro completado con éxito! Ahora puedes iniciar sesión.", "Bienvenido");
+                    bool registrado = await Task.Run(() => _authService.RegisterUser(newUser));
 
-                    // Redirijo al usuario a la pantalla de inicio de sesión.
-                    _mainVM.CurrentView = new LoginViewModel(_mainVM);
+                    // Intento registrar el usuario en la base de datos.
+                    if (registrado)
+                    {
+                        MessageBox.Show("¡Registro completado con éxito! Ahora ya puedes iniciar sesión.", "Bienvenido");
+
+                        // Redirijo al usuario a la pantalla de inicio de sesión.
+                        _mainVM.CurrentView = new LoginViewModel(_mainVM);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error al registrar el usuario.\nRevise todos los campos de nuevo.", "Error de Registro", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
-                else
+                catch 
                 {
-                    MessageBox.Show("Error al registrar el usuario.\nEs posible que el DNI o el Correo ya existan.", "Error de Registro", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                    MessageBox.Show("No se ha podido conectar a la base de datos.", "Sin conexión", MessageBoxButton.OK, MessageBoxImage.Warning);
+                } 
             });
 
             GoBackCommand = new RelayCommand(o => _mainVM.CurrentView = new LoginViewModel(_mainVM));

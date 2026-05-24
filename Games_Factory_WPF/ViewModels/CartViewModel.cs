@@ -36,26 +36,34 @@ namespace Games_Factory.ViewModels
             {
                 if (param is CartItem item)
                 {
-                    _mainVM.CartService.RemoveFromCart(item, App.CurrentUser.IdDni);
+                    _mainVM.CartService.RemoveFromCart(item, App.CurrentUser.IdDni);    
                     OnPropertyChanged(nameof(TotalAmount));
                 }
             });
 
-            CheckoutCommand = new RelayCommand(o =>
+            CheckoutCommand = new RelayCommand(async o =>
             {
                 if (Items.Count == 0) return;
 
                 if (MessageBox.Show($"¿Realizar el pago seguro de {TotalAmount:C}?", "Finalizar Compra", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    // Delegamos todo al servicio.
-                    if (_mainVM.CartService.Checkout(App.CurrentUser.IdDni))
+                    try
                     {
-                        MessageBox.Show("¡Pago completado!");
-                        _mainVM.CurrentView = new HomeViewModel(_mainVM);
+                        bool completado = await Task.Run(() => _mainVM.CartService.Checkout(App.CurrentUser.IdDni));
+                        
+                        // Delegamos todo al servicio.
+                        if (completado)
+                        {
+                            MessageBox.Show("¡Pago completado!");
+                            _mainVM.CurrentView = new HomeViewModel(_mainVM);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("No se ha podido conectar a la base de datos.", "Sin conexión", MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
                 }
             });
         }
-
     }
 }

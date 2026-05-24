@@ -38,7 +38,7 @@ namespace Games_Factory.ViewModels
                 // Actualizo el filtro en tiempo real al escribir sobre el.
                 if (SetProperty(ref _searchText, value))
                 {
-                    ApplyFilters();
+                    _ = ApplyFilters();
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace Games_Factory.ViewModels
             ToggleFiltersCommand = new RelayCommand(o => IsFiltersOpen = !IsFiltersOpen);
 
             // Ejecuto la lógica de filtrado.
-            FilterCommand = new RelayCommand(o => ApplyFilters());
+            FilterCommand = new RelayCommand(o => _ = ApplyFilters());
 
             // Reinicio los filtros y recargo la lista al completo.
             ClearFiltersCommand = new RelayCommand(o =>
@@ -84,18 +84,15 @@ namespace Games_Factory.ViewModels
                 IsPlayStation = false;
                 IsPC = false;
                 SearchText = "";
-                ApplyFilters();
+                _ = ApplyFilters();
             });
 
-            LoadGames();
+            _ = ApplyFilters();
         }
 
         public GamesViewModel() { }
 
-        // Cargo los juegos al iniciar.
-        private void LoadGames() => ApplyFilters();
-
-        private void ApplyFilters()
+        private async Task ApplyFilters()
         {
             // Si no hay filtros seleccionados, muestro todos los juegos.
             string consola = "";
@@ -104,8 +101,17 @@ namespace Games_Factory.ViewModels
             else if (IsXbox) consola = "Xbox";
             else if (IsPC) consola = "PC";
 
-            var juegosFiltrados = _gameService.GetFilteredGames(null, consola, SearchText);
-            GamesList = new ObservableCollection<Videojuego>(juegosFiltrados);
+            try
+            {
+                var juegosFiltrados = await Task.Run(() => _gameService.GetFilteredGames(null, consola, SearchText));
+                GamesList = new ObservableCollection<Videojuego>(juegosFiltrados);
+            }
+            catch (Exception)
+            {
+                GamesList = new ObservableCollection<Videojuego>();
+            }
+
+            
         }
     }
 }

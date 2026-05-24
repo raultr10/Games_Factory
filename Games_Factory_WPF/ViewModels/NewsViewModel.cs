@@ -33,7 +33,7 @@ namespace Games_Factory.ViewModels
         public string SearchText
         {
             get => _searchText;
-            set { if (SetProperty(ref _searchText, value)) ApplyFilters(); }
+            set { if (SetProperty(ref _searchText, value)) _ = ApplyFilters(); }
         }
 
         private bool _isFiltersOpen = true;
@@ -64,20 +64,13 @@ namespace Games_Factory.ViewModels
         {
             _allNews = new List<Noticia>();
 
-            // Cargo las noticias desde la base de datos.
-            using (var ctx = new GameStoreContext())
-            {
-                _allNews = ctx.Noticias.OrderByDescending(n => n.FechaCreacion).ToList();
-            }
-
-            // Inicializo la lista visible de las noticias.
             NewsList = new ObservableCollection<Noticia>(_allNews);
 
             SelectNewsCommand = new RelayCommand(param => { if (param is Noticia n) SelectedNews = n; });
             BackToListCommand = new RelayCommand(o => SelectedNews = null);
 
             // Configuro el comando de filtrado.
-            FilterCommand = new RelayCommand(o => ApplyFilters());
+            FilterCommand = new RelayCommand(o => _ = ApplyFilters());
 
             // Configuro el comando para restablecer filtros.
             ClearCommand = new RelayCommand(o =>
@@ -87,31 +80,51 @@ namespace Games_Factory.ViewModels
                 IsCatXbox = false;
                 IsCatPC = false;
                 SearchText = "";
-                ApplyFilters();
+                _ = ApplyFilters();
             });
 
             ToggleFiltersCommand = new RelayCommand(o => IsFiltersOpen = !IsFiltersOpen);
+
+            _ = ApplyFilters();
         }
 
-        private void ApplyFilters()
+        private async Task ApplyFilters()
         {
-            // Inicio la consulta con todas las noticias disponibles.
-            IEnumerable<Noticia> query = _allNews;
 
-            // Filtro los resultados según el texto de búsqueda.
-            if (!string.IsNullOrWhiteSpace(SearchText))
+            try
             {
-                string txt = SearchText.ToLower();
-                query = query.Where(n => n.Titulo.ToLower().Contains(txt) || n.Descripcion.ToLower().Contains(txt));
+                // Cargo las noticias desde la base de datos.
+                _allNews = await Task.Run(() =>
+                {
+                    using (var ctx = new GameStoreContext())
+                    {
+                        return ctx.Noticias.OrderByDescending(n => n.FechaCreacion).ToList();
+                    }
+                });
+
+                // Inicio la consulta con todas las noticias disponibles.
+                IEnumerable<Noticia> query = _allNews;
+
+                // Filtro los resultados según el texto de búsqueda.
+                if (!string.IsNullOrWhiteSpace(SearchText))
+                {
+                    string txt = SearchText.ToLower();
+                    query = query.Where(n => n.Titulo.ToLower().Contains(txt) || n.Descripcion.ToLower().Contains(txt));
+                }
+
+                // Aplico el filtro si hay una categoría seleccionada.
+                if (IsCatPlaystation) { query = query.Where(n => n.CategoriaNoticia == "Playstation"); }
+                else if (IsCatNintendo) { query = query.Where(n => n.CategoriaNoticia == "Nintendo"); }
+                else if (IsCatXbox) { query = query.Where(n => n.CategoriaNoticia == "Xbox"); }
+                else if (IsCatPC) { query = query.Where(n => n.CategoriaNoticia == "PC"); }
+
+                NewsList = new ObservableCollection<Noticia>(query.ToList());
             }
-
-            // Aplico el filtro si hay una categoría seleccionada.
-            if (IsCatPlaystation) { query = query.Where(n => n.CategoriaNoticia == "Playstation"); }
-            else if (IsCatNintendo) { query = query.Where(n => n.CategoriaNoticia == "Nintendo"); }
-            else if (IsCatXbox) { query = query.Where(n => n.CategoriaNoticia == "Xbox"); }
-            else if (IsCatPC) { query = query.Where(n => n.CategoriaNoticia == "PC"); }
-
-            NewsList = new ObservableCollection<Noticia>(query.ToList());
+            catch (Exception)
+            {
+                _allNews = new List<Noticia>();
+                NewsList = new ObservableCollection<Noticia>();
+            }
         }
     }
 }
