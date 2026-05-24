@@ -1,4 +1,4 @@
-# Games Factory - Sistema de Gestión Multiplataforma
+# Games Factory
 
 ## Descripción del proyecto
 Games Factory es un ecosistema de software multiplataforma diseñado para la gestión integral de una tienda de videojuegos. Cuenta con dos interfaces interconectadas con propósitos distintos:
