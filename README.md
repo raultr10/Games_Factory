@@ -46,7 +46,8 @@ Sigue estos pasos para preparar tu entorno local clonando el repositorio directa
    * Password: `Password123!`
    * Encrypt: Optional
    * Trust Server Certificate: Marcado (activado)
-   Una vez conectado, abre y ejecuta el script de base de datos `Games_Factory.sql` (o `init.sql`) ubicado dentro de la carpeta `GamesServer`. Esto creará la estructura de tablas y poblará la base de datos con información inicial.
+   
+   Una vez conectado, abre y ejecuta el script de base de datos `Games_Factory.sql` (o `init.sql`) ubicado dentro de la carpeta `GamesServer`. Esto creará la estructura de tablas y poblará la base de datos con información    inicial.
 3. Aplicación: Abre la solución `Games_Factory.sln` ubicada en `Games_Factory_WPF` usando Visual Studio.
 4. Establece el proyecto `Games_Factory` como proyecto de inicio e inicia la depuración presionando F5.
 
